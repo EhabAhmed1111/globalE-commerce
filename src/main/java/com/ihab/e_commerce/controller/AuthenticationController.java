@@ -1,8 +1,8 @@
 package com.ihab.e_commerce.controller;
 
-import com.ihab.e_commerce.data.dtos.auth.AuthenticationRequest;
-import com.ihab.e_commerce.data.dtos.auth.AuthenticationResponse;
-import com.ihab.e_commerce.data.dtos.auth.RegisterRequest;
+import com.ihab.e_commerce.data.dto.auth.AuthenticationRequest;
+import com.ihab.e_commerce.data.dto.auth.AuthenticationResponse;
+import com.ihab.e_commerce.data.dto.auth.RegisterRequest;
 import com.ihab.e_commerce.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
