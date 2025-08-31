@@ -37,10 +37,10 @@ Before running this application, ensure you have:
 
  ### Clone the Repository
 
-'''
+```
 git clone https://github.com/your-username/global-ecommerce-platform.git
 cd global-ecommerce-platform
-'''
+```
 </li>
 <li>
 
@@ -51,18 +51,22 @@ you can skip this step if you use Postgres throw Docker
 
 ### Configure Application Properties
 
-if you use Docker 
-'''
+if you use Docker
+```
 spring.datasource.url=jdbc:postgresql://postgres:5432/globalcommerce
+
 spring.datasource.username=your-db-username
+
 spring.datasource.password=your-db-password
-'''
-same as step 3 if you use local
-'''
+```
+if you use local
+```
 spring.datasource.url=jdbc:postgresql://local:5432/globalcommerce
+
 spring.datasource.username=your-db-username
+
 spring.datasource.password=your-db-password
-'''
+```
 
 [//]: # ()
 [//]: # (stripe.secret-key=your-stripe-secret-key)
@@ -84,31 +88,29 @@ if you use Docker
 
 use this command in terminal
 if it is you first time to run app
-'''docker-compose up --build'''
+```docker-compose up --build```
 if you run this app throw docker before use this command
-'''docker-compose up'''
+```docker-compose up```
 </li>
 <li>
 if you don't use docker
 
-'''
-
+```
 # Build the project
 mvn clean package
 
 # Run the application
 mvn spring-boot:run
-
-'''
+```
 the app will start 'http://localhost:8080'
 </li>
 </ul>
 </li>
-
-<li>
+</ol>
 
 ## 🗂️ Project Structure
-'''
+
+```
 src/
 ├── main/
 │   ├── java/com/ihab/globalcommerce/
@@ -126,12 +128,10 @@ src/
 │       ├── liquibase.yml # liquibase configuration
 │       └── db/changelog/changelog.sql # migration file
 └── test/                    # Test classes
-'''
-</li>
+```
+
 
 [//]: # (here we will add all end point)
-</ol>
-
 
 
 
