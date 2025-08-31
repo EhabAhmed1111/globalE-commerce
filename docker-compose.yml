@@ -1,0 +1,46 @@
+version: "3.7"
+#8080(host port number):8080(container one)
+services:
+  app:
+    build: .
+    ports:
+      - target: 8080
+        published: 8080
+    networks:
+      - backend-network
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - target: 5432
+        published: 5200
+    networks:
+      - backend-network
+    volumes:
+      - db-volumes:/var/lib/postgres/data
+
+  liquibase:
+    image: liquibase
+    depends_on:
+      - postgres
+    volumes:
+      - ./src/main/resource/db/changelog:/liquibase/changelog
+    command:
+      --url=jdbc:postgresql://postgres:5432/ecommerce
+      --username=postgres
+      --password=postgres
+      --changeLogFile=changelog/changelog.sql
+      update
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge
+
+volumes:
+  db-volumes:
