@@ -1,9 +1,9 @@
 package com.ihab.e_commerce.service.auth;
 
 
-import com.ihab.e_commerce.data.dtos.auth.AuthenticationRequest;
-import com.ihab.e_commerce.data.dtos.auth.AuthenticationResponse;
-import com.ihab.e_commerce.data.dtos.auth.RegisterRequest;
+import com.ihab.e_commerce.data.dto.auth.AuthenticationRequest;
+import com.ihab.e_commerce.data.dto.auth.AuthenticationResponse;
+import com.ihab.e_commerce.data.dto.auth.RegisterRequest;
 import com.ihab.e_commerce.data.enums.Role;
 import com.ihab.e_commerce.data.model.User;
 import com.ihab.e_commerce.data.repo.UserRepository;

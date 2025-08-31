@@ -1,4 +1,4 @@
-package com.ihab.e_commerce.data.dtos.auth;
+package com.ihab.e_commerce.data.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
