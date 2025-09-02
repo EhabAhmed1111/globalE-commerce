@@ -34,5 +34,10 @@ public class Product {
 
     private String description;
 
+    @ManyToOne(cascade = {
+            CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH
+    }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
 }
