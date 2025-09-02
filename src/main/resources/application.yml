@@ -25,3 +25,6 @@ spring:
     database: postgresql
     #this for  dialect that help hibernate to translate into understandable sql lang
     database-perform: org.hibernate.dialect.PostgreSQLDialect
+
+api:
+  prefix: "/api/v1"

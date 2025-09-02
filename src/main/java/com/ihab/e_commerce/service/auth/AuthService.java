@@ -1,9 +1,9 @@
 package com.ihab.e_commerce.service.auth;
 
 
-import com.ihab.e_commerce.data.dto.auth.AuthenticationRequest;
-import com.ihab.e_commerce.data.dto.auth.AuthenticationResponse;
-import com.ihab.e_commerce.data.dto.auth.RegisterRequest;
+import com.ihab.e_commerce.controller.request.AuthenticationRequest;
+import com.ihab.e_commerce.controller.response.GlobalSuccessResponse;
+import com.ihab.e_commerce.controller.request.RegisterRequest;
 import com.ihab.e_commerce.data.enums.Role;
 import com.ihab.e_commerce.data.model.User;
 import com.ihab.e_commerce.data.repo.UserRepository;
@@ -23,7 +23,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public GlobalSuccessResponse register(RegisterRequest request) {
         var user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -33,11 +33,11 @@ public class AuthService {
                 .build();
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
+        return GlobalSuccessResponse.builder()
+                .data(jwtToken)
                 .build();
     }
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public GlobalSuccessResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -47,8 +47,8 @@ public class AuthService {
                 ()->new UsernameNotFoundException("User Not Found")
         );
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
+        return GlobalSuccessResponse.builder()
+                .data(jwtToken)
                 .build();
     }
 }
