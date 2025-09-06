@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,6 +25,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     private BigDecimal price;
@@ -39,5 +41,10 @@ public class Product {
     }, fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    // The project may have more than one media, but it will have only one dir
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "product")
+    private List<Media> media;
+
 
 }

@@ -1,8 +1,8 @@
 package com.ihab.e_commerce.controller.auth;
 
 import com.ihab.e_commerce.controller.request.AuthenticationRequest;
-import com.ihab.e_commerce.controller.response.GlobalSuccessResponse;
 import com.ihab.e_commerce.controller.request.RegisterRequest;
+import com.ihab.e_commerce.controller.response.GlobalSuccessResponse;
 import com.ihab.e_commerce.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(authService.register(request));
     }
 
-    @PostMapping("/authenticate")
+    @PostMapping("/login")
     public ResponseEntity<GlobalSuccessResponse> authenticate(
             @RequestBody AuthenticationRequest request
     ){

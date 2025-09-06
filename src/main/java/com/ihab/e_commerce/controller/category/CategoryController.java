@@ -3,9 +3,13 @@ package com.ihab.e_commerce.controller.category;
 
 import com.ihab.e_commerce.controller.response.GlobalSuccessResponse;
 import com.ihab.e_commerce.data.model.Category;
+import com.ihab.e_commerce.data.model.User;
 import com.ihab.e_commerce.service.category.CategoryService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Role;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,7 +61,7 @@ public class CategoryController {
     //ADMIN roles
 
     @PostMapping()
-    public ResponseEntity<GlobalSuccessResponse> addCategory(@RequestBody Category category) {
+    public ResponseEntity<GlobalSuccessResponse> addCategory(HttpServletRequest request, @RequestBody Category category) {
         log.debug("Received a request to Add category with name: {} from addCategory method", category.getName());
         Category addedCategory = categoryService.addCategory(category);
         log.info("Successfully adding category with name: {}  from addCategory method", category.getName());
