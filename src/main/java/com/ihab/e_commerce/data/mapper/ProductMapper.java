@@ -1,15 +1,21 @@
 package com.ihab.e_commerce.data.mapper;
 
+import com.ihab.e_commerce.controller.response.ProductResponse;
 import com.ihab.e_commerce.data.dto.ProductDto;
 import com.ihab.e_commerce.data.model.Category;
+import com.ihab.e_commerce.data.model.Media;
 import com.ihab.e_commerce.data.model.Product;
 import com.ihab.e_commerce.data.repo.CategoryRepo;
 import com.ihab.e_commerce.service.category.CategoryService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Data
 @RequiredArgsConstructor
+@Component
 public class ProductMapper {
 
     /**@author IHAB
@@ -17,6 +23,8 @@ public class ProductMapper {
      */
 
     private final CategoryService categoryService;
+
+    private final MediaMapper mediaMapper;
 
     public Product fromDtoToProduct(ProductDto productDto) {
         Category category = categoryService.getCategoryByName(productDto.getCategoryName());
@@ -40,6 +48,20 @@ public class ProductMapper {
                 .categoryName(category.getName())
                 .amount(product.getAmount())
                 .price(product.getPrice())
+                .build();
+    }
+    public ProductResponse fromProductToProductResponse(Product product){
+        Category category = product.getCategory();
+        List<Media> medias = product.getMedia();
+
+        return ProductResponse.builder()
+                .productName(product.getName())
+                .brand(product.getBrand())
+                .description(product.getDescription())
+                .categoryName(category.getName())
+                .amount(product.getAmount())
+                .price(product.getPrice())
+                .medias(mediaMapper.fromListOfMediaToListOfDto(medias))
                 .build();
     }
 }

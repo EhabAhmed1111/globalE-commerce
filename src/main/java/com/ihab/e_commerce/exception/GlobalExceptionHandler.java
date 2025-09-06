@@ -26,4 +26,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<GlobalExceptionResponse> handleIllegalArgException(IllegalArgumentException exception){
+
+        GlobalExceptionResponse exceptionResponse =
+                GlobalExceptionResponse.builder()
+                        .date(System.currentTimeMillis())
+                        .status(HttpStatus.BAD_REQUEST.value())
+                        .message(exception.getMessage())
+                        .build();
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
 }

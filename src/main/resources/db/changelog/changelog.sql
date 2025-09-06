@@ -15,3 +15,10 @@ CREATE SEQUENCE  IF NOT EXISTS "_user_seq" AS bigint START WITH 1 INCREMENT BY 5
 -- precondition-sql-check expectedResult:0 select count(*) from _user ;
 insert into _user(id, email, first_name, last_name, password) values(1, 'ehab@gmail.com', 'ehab', 'khalil', '124545');
 -- rollback truncate table _user;
+
+
+--we need to create category
+--then we create product
+--and link it to category
+--then we create Media
+--and link it to product
