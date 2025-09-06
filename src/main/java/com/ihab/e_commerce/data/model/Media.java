@@ -3,6 +3,9 @@ package com.ihab.e_commerce.data.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -13,27 +16,28 @@ import lombok.*;
 @Table(name = "category")
 public class Media {
 
+
     /*
-    * Here I need to make directory that has every thing about specific product
-    * and when I need to access any file withing the dir
-    * I can concatenate the downloadUrl with fileName
-    * It will be like this
-    * downloadUrl = "/home/moaz/springProject/cloth-shops-main-ideas/"
-    * fileName = "Screenshot from 2025-07-10 23-34-37.png"
-    * so the access URL will be
-    * "/home/moaz/springProject/cloth-shops-main-ideas/Screenshot from 2025-07-10 23-34-37.png"
+    * ok new plan I decided to use cloudinary as my storage
     * */
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String downloadUrl;
+    // We deal with this later
+    @Column(name = "url")
+    private String url;
 
+    @Column(name = "file_type")
     private String fileType;
 
-    private String fileName;
+    @Column(name = "cloudinary_public_id", unique = true)
+    private String cloudinaryPublicId; // Important for deletion
 
+    @CreationTimestamp
+    @Column(name = "uploaded_at")
+    private LocalDateTime uploadedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")

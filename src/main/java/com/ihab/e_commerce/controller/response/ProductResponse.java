@@ -1,22 +1,25 @@
-package com.ihab.e_commerce.data.dto;
+package com.ihab.e_commerce.controller.response;
 
+import com.ihab.e_commerce.data.dto.MediaDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductDto {
-// We use this to transfer the data from user to server
+public class ProductResponse {
+// This is what user will see
     private String productName;
     private BigDecimal price;
     private String brand;
     private Integer amount;
     private String description;
     private String categoryName;
+    private List<MediaDto> medias;
 }
