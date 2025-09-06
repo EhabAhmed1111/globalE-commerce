@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class MediaDto {
 
+    private String fileName;
     private String url;
     private String fileType;
     private String cloudinaryPublicId; // Important for deletion

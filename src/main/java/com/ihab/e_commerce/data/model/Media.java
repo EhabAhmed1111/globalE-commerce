@@ -32,6 +32,9 @@ public class Media {
     @Column(name = "file_type")
     private String fileType;
 
+    @Column(name = "file_name")
+    private String fileName;
+
     @Column(name = "cloudinary_public_id", unique = true)
     private String cloudinaryPublicId; // Important for deletion
 

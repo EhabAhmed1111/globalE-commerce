@@ -3,9 +3,16 @@ package com.ihab.e_commerce.service.media;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.ihab.e_commerce.data.dto.MediaDto;
+import com.ihab.e_commerce.data.mapper.MediaMapper;
 import com.ihab.e_commerce.data.model.Media;
+import com.ihab.e_commerce.data.model.Product;
 import com.ihab.e_commerce.data.repo.MediaRepo;
+import com.ihab.e_commerce.data.repo.ProductRepo;
+import com.ihab.e_commerce.exception.GlobalNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,51 +21,131 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class MediaService {
 
     private final Cloudinary cloudinary;
-
     private final MediaRepo mediaRepo;
+    private final ProductRepo productRepo;
+    private final MediaMapper mediaMapper;
 
-    public Map uploadImage(MultipartFile file) throws IOException {
+    // Should I get make download method???
 
-        String contentType = file.getContentType();
+    // Maybe we change class response name
+    public MediaDto uploadImage(MultipartFile file, Long productId) throws IOException {
+        log.debug("Uploading image with name: {} to product with id: {} from uploadImage method", file.getOriginalFilename(), productId);
+        log.debug("Validating that file is image");
+        validateImageFile(file);
+        log.info("Image validated successfully");
+        log.debug("Fetching product to attach Image to it");
+        Product product = productRepo.findById(productId).orElseThrow(()->{
+            //here we will make logger
+            log.warn("Failed to get product with id: {} from uploadImage method", productId);
+            return new GlobalNotFoundException("There is no product with id: " + productId);
+        });
 
-        if (contentType == null || !contentType.startsWith("image/")){
-            throw new IllegalArgumentException("File must be image");
-        }
-        var uploadResult = cloudinary.uploader().upload(file.getBytes(),
-                ObjectUtils.asMap(
-                        "public_id", "images/" + UUID.randomUUID().toString(),
-                        "folder", "ecommerce/product"
-                ));
-
-        return uploadResult;
+        String uniqueId = UUID.randomUUID().toString();
+        var option = ObjectUtils.asMap(
+                "public_id", "products/images/" + uniqueId,
+                "folder", "ecommerce",
+                "use_filename", true,
+                "unique_filename", false,
+                "overwrite", false,
+                "resource_type", "image"
+        );
+        log.debug("Uploading Image to cloudinary");
+        var uploadResult = cloudinary.uploader().upload(file.getBytes(), option);
+        Media media = Media.builder()
+                .fileType((String) uploadResult.get("resource_type"))
+                .fileName(file.getOriginalFilename())
+                .cloudinaryPublicId((String) uploadResult.get("public_id"))
+                .url((String) uploadResult.get("secure_url"))
+                .product(product)
+                .build();
+        log.info("The uploading ending successfully");
+        log.debug("Saving image to database");
+        return mediaMapper.fromMediaToDto(media);
     }
 
-    public Map uploadVideo(MultipartFile file) throws IOException {
+    private void validateImageFile(MultipartFile file) {
+        if (file.isEmpty())
+            throw new IllegalArgumentException("File can not be empty");
 
         String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/"))
+            throw new IllegalArgumentException("File must be an image");
 
-        if (contentType == null || !contentType.startsWith("video/")){
-            throw new IllegalArgumentException("File must be video");
-        }
-        var uploadResult = cloudinary.uploader().upload(file.getBytes(),
-                ObjectUtils.asMap(
-                        "resource_type", "video",
-                        "public_id", "videos/" + UUID.randomUUID().toString(),
-                        "folder", "ecommerce/product",
-                        "duration", "15"
-                ));
+        // Image must be 5MB
+        if (file.getSize() > 5 * 1024 * 1024)
+            throw new IllegalArgumentException("Image size must be less than 5MB");
 
-        return uploadResult;
+    }
+    public MediaDto uploadVideo(MultipartFile file, Long productId) throws IOException {
+
+        log.debug("Uploading video with name: {} to product with id: {} from uploadVideo method", file.getOriginalFilename(), productId);
+        log.debug("Validating that file is video");
+        validateVideoFile(file);
+        log.info("video validated successfully");
+        log.debug("Fetching product to attach video to it");
+        Product product = productRepo.findById(productId).orElseThrow(()->{
+            //here we will make logger
+            log.warn("Failed to get product with id: {} from uploadVideo method", productId);
+            return new GlobalNotFoundException("There is no product with id: " + productId);
+        });
+
+
+        String uniqueId = UUID.randomUUID().toString();
+        var option = ObjectUtils.asMap(
+                "public_id", "products/videos/" + uniqueId,
+                "folder", "ecommerce",
+                "use_filename", true,
+                "unique_filename", false,
+                "overwrite", false,
+                "resource_type", "video"
+        );
+        log.debug("Uploading Video to cloudinary");
+        var uploadResult = cloudinary.uploader().upload(file.getBytes(), option);
+
+        Media media = Media.builder()
+                .fileType((String) uploadResult.get("resource_type"))
+                .fileName(file.getOriginalFilename())
+                .cloudinaryPublicId((String) uploadResult.get("public_id"))
+                .url((String) uploadResult.get("secure_url"))
+                .product(product)
+                .build();
+        log.info("The Video uploading ending successfully");
+
+        log.debug("Saving video to database");
+        return mediaMapper.fromMediaToDto(media);
     }
 
-    public Map deleteFile(String publicId) throws IOException{
-        var deleteResult = cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
-        return deleteResult;
+    private void validateVideoFile(MultipartFile file) {
+        if (file.isEmpty())
+            throw new IllegalArgumentException("File can not be empty");
+
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("video/"))
+            throw new IllegalArgumentException("File must be an video");
+    }
+
+    public void deleteFile(String publicId) throws IOException {
+        log.debug("Fetching media file with public_id: {} to delete it", publicId);
+        Media media = mediaRepo.findByCloudinaryPublicId(publicId).orElseThrow(()->{
+            log.warn("Failed to get the media file");
+            return new GlobalNotFoundException("There is no media with this public key: " + publicId);
+        });
+        log.info("The media file fetched successfully");
+
+        log.debug("Deleting media file from cloudinary");
+        var deleteResult = cloudinary.uploader().destroy(media.getCloudinaryPublicId(), ObjectUtils.asMap(
+                "resource_type", media.getFileType()
+        ));
+        log.info("File deleted successfully");
+
+        mediaRepo.delete(media);
     }
 
 }
