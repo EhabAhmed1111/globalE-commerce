@@ -36,14 +36,9 @@ public class MediaService {
 
     // Maybe we change class response name
     public MediaDto uploadImage(MultipartFile file, Long productId) throws IOException {
-        log.debug("Uploading image with name: {} to product with id: {} from uploadImage method", file.getOriginalFilename(), productId);
-        log.debug("Validating that file is image");
         validateImageFile(file);
-        log.info("Image validated successfully");
-        log.debug("Fetching product to attach Image to it");
         Product product = productRepo.findById(productId).orElseThrow(()->{
             //here we will make logger
-            log.warn("Failed to get product with id: {} from uploadImage method", productId);
             return new GlobalNotFoundException("There is no product with id: " + productId);
         });
 
@@ -56,7 +51,6 @@ public class MediaService {
                 "overwrite", false,
                 "resource_type", "image"
         );
-        log.debug("Uploading Image to cloudinary");
         var uploadResult = cloudinary.uploader().upload(file.getBytes(), option);
         Media media = Media.builder()
                 .fileType((String) uploadResult.get("resource_type"))
@@ -65,8 +59,6 @@ public class MediaService {
                 .url((String) uploadResult.get("secure_url"))
                 .product(product)
                 .build();
-        log.info("The uploading ending successfully");
-        log.debug("Saving image to database");
         return mediaMapper.fromMediaToDto(media);
     }
 
@@ -85,14 +77,9 @@ public class MediaService {
     }
     public MediaDto uploadVideo(MultipartFile file, Long productId) throws IOException {
 
-        log.debug("Uploading video with name: {} to product with id: {} from uploadVideo method", file.getOriginalFilename(), productId);
-        log.debug("Validating that file is video");
         validateVideoFile(file);
-        log.info("video validated successfully");
-        log.debug("Fetching product to attach video to it");
         Product product = productRepo.findById(productId).orElseThrow(()->{
             //here we will make logger
-            log.warn("Failed to get product with id: {} from uploadVideo method", productId);
             return new GlobalNotFoundException("There is no product with id: " + productId);
         });
 
@@ -106,7 +93,6 @@ public class MediaService {
                 "overwrite", false,
                 "resource_type", "video"
         );
-        log.debug("Uploading Video to cloudinary");
         var uploadResult = cloudinary.uploader().upload(file.getBytes(), option);
 
         Media media = Media.builder()
@@ -116,9 +102,7 @@ public class MediaService {
                 .url((String) uploadResult.get("secure_url"))
                 .product(product)
                 .build();
-        log.info("The Video uploading ending successfully");
 
-        log.debug("Saving video to database");
         return mediaMapper.fromMediaToDto(media);
     }
 
@@ -132,18 +116,11 @@ public class MediaService {
     }
 
     public void deleteFile(String publicId) throws IOException {
-        log.debug("Fetching media file with public_id: {} to delete it", publicId);
-        Media media = mediaRepo.findByCloudinaryPublicId(publicId).orElseThrow(()->{
-            log.warn("Failed to get the media file");
-            return new GlobalNotFoundException("There is no media with this public key: " + publicId);
-        });
-        log.info("The media file fetched successfully");
+        Media media = mediaRepo.findByCloudinaryPublicId(publicId).orElseThrow(()-> new GlobalNotFoundException("There is no media with this public key: " + publicId));
 
-        log.debug("Deleting media file from cloudinary");
-        var deleteResult = cloudinary.uploader().destroy(media.getCloudinaryPublicId(), ObjectUtils.asMap(
+        cloudinary.uploader().destroy(media.getCloudinaryPublicId(), ObjectUtils.asMap(
                 "resource_type", media.getFileType()
         ));
-        log.info("File deleted successfully");
 
         mediaRepo.delete(media);
     }

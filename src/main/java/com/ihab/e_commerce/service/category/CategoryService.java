@@ -30,51 +30,37 @@ public class CategoryService {
 
     // ADMIN, USER Role
     public List<Category> getAllCategories() {
-        log.debug("Fetching all category from getAllCategories method");
         return categoryRepo.findAll();
     }
 
     public Category getCategoryById(Long id) {
-        log.debug("Fetching category with id: {} from getCategoryById method", id);
 
-        return categoryRepo.findById(id).orElseThrow(() -> {
-            log.warn("there is no category with id: {} from getCategoryById method", id);
-            return new GlobalNotFoundException("There is no category with id: " + id);
-                }
+        return categoryRepo.findById(id).orElseThrow(() -> new GlobalNotFoundException("There is no category with id: " + id)
         );
     }
 
     public Category getCategoryByName(String name) {
-        log.debug("Fetching category with name: {} from getCategoryByName method", name);
-        return categoryRepo.findByName(name).orElseThrow(() -> {
-                    log.warn("there is no category with name: {} from getCategoryByName method", name);
-                    return new GlobalNotFoundException("There is no category with name: " + name);
-                }
+        return categoryRepo.findByName(name).orElseThrow(() -> new GlobalNotFoundException("There is no category with name: " + name)
         );
     }
 
 
     // only ADMIN Role
     public Category updateCategory(Category category, Long currentCategoryId) {
-        log.debug("Fetching category with id: {} from updateCategory method", currentCategoryId);
         Category existedCategory = getCategoryById(currentCategoryId);
-        log.info("Modifying category with name: {} from updateCategory method", currentCategoryId);
         existedCategory.setName(category.getName());
-        log.info("Successfully modifying category to name: {} from updateCategory method", currentCategoryId);
         return categoryRepo.save(existedCategory);
     }
 
     public Category deleteCategoryById(Long id) {
-        log.debug("Deleting category with id: {} from deleteCategoryById method", id);
         Category existedCategory = getCategoryById(id);
         categoryRepo.delete(existedCategory);
-        log.info("Successfully delete category with id: {} from deleteCategoryById method", id);
         return existedCategory;
     }
 
     public Category addCategory(Category category) {
+        // Maybe I could add check case to check if their another category with same name?
         // should I add exception in case there is null value
-        log.debug("Adding category with name: {} from addCategory method", category.getName());
         return categoryRepo.save(category);
     }
 }
