@@ -24,31 +24,22 @@ public class ProductService {
 
 
     public ProductResponse getProduct(Long productId) {
-        log.debug("Fetching product with id: {} from getProduct method", productId);
-        Product product = productRepo.findById(productId).orElseThrow(() -> {
-                    log.warn("there is no product with id: {} from getProduct method", productId);
-                    return new GlobalNotFoundException(" There is no product with id: " + productId);
-                }
+        Product product = productRepo.findById(productId).orElseThrow(() -> new GlobalNotFoundException(" There is no product with id: " + productId)
         );
-        log.info("Product Fetched successfully from getProduct method");
         return productMapper.fromProductToProductResponse(product);
     }
 
 
     public ProductResponse addProduct(ProductDto productDto) {
-        log.debug("Adding product with name: {} from addProduct method", productDto.getProductName());
         Product product = productMapper.fromDtoToProduct(productDto);
         productRepo.save(product);
-        log.info("Product added successfully from addProduct method");
         return productMapper.fromProductToProductResponse(product);
     }
 
 
     public void deleteProduct(Long productId) {
-        log.debug("Deleting product with id: {} from deleteProduct method", productId);
         productRepo.findById(productId).ifPresentOrElse(productRepo::delete,
                 () -> {
-                    log.warn("Product with id: {} from method deleteProduct are not found", productId);
                     throw new GlobalNotFoundException(" There is no product with id: " + productId);
                 });
     }
@@ -56,15 +47,9 @@ public class ProductService {
     // Should I add this
 
     public ProductResponse updateProduct(ProductDto productDto, Long productId){
-        log.debug("Updating product with id: {} from updateProduct method", productId);
-        Product product = productRepo.findById(productId).orElseThrow(() -> {
-            log.warn("there is no product with id: {} from update method", productId);
-            return new GlobalNotFoundException(" There is no product with id: " + productId);
-                }
+        Product product = productRepo.findById(productId).orElseThrow(() -> new GlobalNotFoundException(" There is no product with id: " + productId)
         );
-        log.debug("Saving the updated product with id: {} from updateProduct method", productId);
         Product updatedProduct = productRepo.save(updateProduct(productDto, product));
-        log.info("Saved done successfully from updateProduct method");
         return productMapper.fromProductToProductResponse(updatedProduct);
     }
         private Product updateProduct(ProductDto productDto, Product product){

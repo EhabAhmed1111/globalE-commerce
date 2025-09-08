@@ -16,7 +16,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
     ports:
-      - target: 5432
+      - target: 5432 #the port in container
         published: 5200
     networks:
       - backend-network
@@ -28,7 +28,7 @@ services:
     depends_on:
       - postgres
     volumes:
-      - ./src/main/resource/db/changelog:/liquibase/changelog
+      - ./src/main/resources/db/changelog:/liquibase/changelog
     command:
       --url=jdbc:postgresql://postgres:5432/ecommerce
       --username=postgres
