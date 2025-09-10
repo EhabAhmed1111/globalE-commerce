@@ -1,14 +1,45 @@
 package com.ihab.e_commerce.controller.media;
 
 
+import com.ihab.e_commerce.controller.response.GlobalSuccessResponse;
+import com.ihab.e_commerce.data.dto.MediaDto;
+import com.ihab.e_commerce.service.media.MediaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${api.prefix}/medias")
 public class MediaController {
+
+    private final MediaService mediaService;
+
+    @PostMapping("/{id}/image")
+    public ResponseEntity<GlobalSuccessResponse> uploadProductImage(
+            @RequestParam List<MultipartFile> files,
+            @PathVariable Long id){
+        List<MediaDto> mediaDto = mediaService.uploadImage(files, id);
+        return ResponseEntity.ok(new GlobalSuccessResponse("Image uploaded successfully", mediaDto));
+    }
+
+    @PostMapping("/{id}/video")
+    public ResponseEntity<GlobalSuccessResponse> uploadProductVideo(
+            @RequestParam MultipartFile file,
+            @PathVariable Long id){
+        MediaDto mediaDto = mediaService.uploadVideo(file, id);
+        return ResponseEntity.ok(new GlobalSuccessResponse("Video uploaded successfully", mediaDto));
+    }
+
+    @DeleteMapping("{mediaId}")
+    public ResponseEntity<GlobalSuccessResponse> deleteFile(
+            @PathVariable String mediaId){
+        mediaService.deleteFile(mediaId);
+        return ResponseEntity.ok(new GlobalSuccessResponse("FIle deleted successfully", null));
+    }
 }

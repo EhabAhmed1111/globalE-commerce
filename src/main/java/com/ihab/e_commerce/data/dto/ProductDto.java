@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductDto {
-// We use this to transfer the data from user to server
+    // We use this to transfer the data from user to server
     private String productName;
     private BigDecimal price;
     private String brand;
