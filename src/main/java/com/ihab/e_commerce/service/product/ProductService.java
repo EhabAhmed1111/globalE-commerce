@@ -17,11 +17,14 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
+    /*
+     * TODO(ADD GET-ALL-PRODUCT-WITH-CATEGORY)
+     * */
+
+    final private CategoryService categoryService;
 
     final private ProductRepo productRepo;
     final private ProductMapper productMapper;
-    final private CategoryService categoryService;
-
 
     public ProductResponse getProduct(Long productId) {
         Product product = productRepo.findById(productId).orElseThrow(() -> new GlobalNotFoundException(" There is no product with id: " + productId)
@@ -46,22 +49,23 @@ public class ProductService {
 
     // Should I add this
 
-    public ProductResponse updateProduct(ProductDto productDto, Long productId){
+    public ProductResponse updateProduct(ProductDto productDto, Long productId) {
         Product product = productRepo.findById(productId).orElseThrow(() -> new GlobalNotFoundException(" There is no product with id: " + productId)
         );
         Product updatedProduct = productRepo.save(updateProduct(productDto, product));
         return productMapper.fromProductToProductResponse(updatedProduct);
     }
-        private Product updateProduct(ProductDto productDto, Product product){
-            Category category = categoryService.getCategoryByName(productDto.getCategoryName());
 
-            product.setAmount(productDto.getAmount());
-            product.setName(productDto.getProductName());
-            product.setBrand(productDto.getBrand());
-            product.setCategory(category);
-            product.setDescription(product.getDescription());
-            product.setPrice(productDto.getPrice());
+    private Product updateProduct(ProductDto productDto, Product product) {
+        Category category = categoryService.getCategoryByName(productDto.getCategoryName());
 
-            return product;
-        }
+        product.setAmount(productDto.getAmount());
+        product.setName(productDto.getProductName());
+        product.setBrand(productDto.getBrand());
+        product.setCategory(category);
+        product.setDescription(product.getDescription());
+        product.setPrice(productDto.getPrice());
+
+        return product;
+    }
 }
