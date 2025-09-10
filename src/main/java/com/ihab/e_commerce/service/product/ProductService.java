@@ -33,6 +33,12 @@ public class ProductService {
     }
 
 
+    public Product getProductForOthersClasses(Long productId) {
+        return productRepo.findById(productId).orElseThrow(() -> new GlobalNotFoundException(" There is no product with id: " + productId)
+        );
+    }
+
+
     public ProductResponse addProduct(ProductDto productDto) {
         Product product = productMapper.fromDtoToProduct(productDto);
         productRepo.save(product);

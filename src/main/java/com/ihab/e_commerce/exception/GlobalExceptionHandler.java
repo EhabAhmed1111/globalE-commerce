@@ -2,10 +2,13 @@ package com.ihab.e_commerce.exception;
 
 
 import com.ihab.e_commerce.controller.response.GlobalExceptionResponse;
+import org.apache.hc.core5.http.HttpConnection;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.io.IOException;
 
 /** @author Ihab
 * */
@@ -36,6 +39,30 @@ public class GlobalExceptionHandler {
                         .message(exception.getMessage())
                         .build();
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<GlobalExceptionResponse> handleIOException(IOException exception){
+
+        GlobalExceptionResponse exceptionResponse =
+                GlobalExceptionResponse.builder()
+                        .date(System.currentTimeMillis())
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                        .message(exception.getMessage())
+                        .build();
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<GlobalExceptionResponse> handleRunTimeException(RuntimeException exception){
+
+        GlobalExceptionResponse exceptionResponse =
+                GlobalExceptionResponse.builder()
+                        .date(System.currentTimeMillis())
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                        .message(exception.getMessage())
+                        .build();
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

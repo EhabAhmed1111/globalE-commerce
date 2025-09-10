@@ -1,6 +1,7 @@
 package com.ihab.e_commerce.data.mapper;
 
 import com.ihab.e_commerce.controller.response.ProductResponse;
+import com.ihab.e_commerce.data.dto.MediaDto;
 import com.ihab.e_commerce.data.dto.ProductDto;
 import com.ihab.e_commerce.data.model.Category;
 import com.ihab.e_commerce.data.model.Media;
@@ -62,6 +63,20 @@ public class ProductMapper {
                 .amount(product.getAmount())
                 .price(product.getPrice())
                 .medias(mediaMapper.fromListOfMediaToListOfDto(medias))
+                .build();
+    }
+    public Product fromResponseToProduct(ProductResponse productResponse){
+        Category category = categoryService.getCategoryByName(productResponse.getCategoryName());
+        List<MediaDto> medias = productResponse.getMedias();
+
+        return Product.builder()
+                .name(productResponse.getProductName())
+                .brand(productResponse.getBrand())
+                .description(productResponse.getDescription())
+                .category(category)
+                .amount(productResponse.getAmount())
+                .price(productResponse.getPrice())
+                .media(mediaMapper.fromDtoToListOfMedia(medias))
                 .build();
     }
 }
