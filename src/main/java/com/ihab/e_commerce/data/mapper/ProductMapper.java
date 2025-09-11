@@ -1,12 +1,11 @@
 package com.ihab.e_commerce.data.mapper;
 
-import com.ihab.e_commerce.controller.response.ProductResponse;
+import com.ihab.e_commerce.rest.response.ProductResponse;
 import com.ihab.e_commerce.data.dto.MediaDto;
 import com.ihab.e_commerce.data.dto.ProductDto;
 import com.ihab.e_commerce.data.model.Category;
 import com.ihab.e_commerce.data.model.Media;
 import com.ihab.e_commerce.data.model.Product;
-import com.ihab.e_commerce.data.repo.CategoryRepo;
 import com.ihab.e_commerce.service.category.CategoryService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

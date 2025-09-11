@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class MediaService {
-
+// todo add logger
     private final Cloudinary cloudinary;
     private final MediaRepo mediaRepo;
     private final ProductService productService;
@@ -39,47 +39,53 @@ public class MediaService {
     // Should I get make download method???
 
     // Maybe we change class response name
-    public List<MediaDto> uploadImage(List<MultipartFile> files, Long productId)  {
-        validateImageFile(files);
+    public List<MediaDto> uploadImage(List<MultipartFile> files, Long productId) {
+        validateImageFiles(files);
         // TODO(Change this method in product)
         Product product = productService.getProductForOthersClasses(productId);
 
-        String uniqueId = UUID.randomUUID().toString();
-        var option = ObjectUtils.asMap(
-                "public_id", "products/images/" + uniqueId,
-                "folder", "ecommerce",
-                "use_filename", true,
-                "unique_filename", false,
-                "overwrite", false,
-                "resource_type", "image"
-        );
+
         List<MediaDto> mediaDto = files.stream().map(
                 file -> {
-
-                    Map uploadResult = null;
-                    try {
-                        uploadResult = cloudinary.uploader().upload(file.getBytes(), option);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    Media media = Media.builder()
-                            .fileType((String) uploadResult.get("resource_type"))
-                            .fileName(file.getOriginalFilename())
-                            .cloudinaryPublicId((String) uploadResult.get("public_id"))
-                            .url((String) uploadResult.get("secure_url"))
-                            .product(product)
-                            .build();
-                    return mediaMapper.fromMediaToDto(media);
+                    return uploadSingleImage(file, product);
                 }
         ).collect(Collectors.toList());
 
         return mediaDto;
     }
 
-    private void validateImageFile(List<MultipartFile> files) {
-        files.stream().map(
-                file->{
+    private MediaDto uploadSingleImage(MultipartFile file, Product product) {
+        try {
+            String uniqueId = UUID.randomUUID().toString();
+            var option = ObjectUtils.asMap(
+                    "public_id", "products/images/" + uniqueId,
+                    "folder", "ecommerce",
+                    "use_filename", true,
+                    "unique_filename", false,
+                    "overwrite", false,
+                    "resource_type", "image"
+            );
+            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), option);
+            Media media = Media.builder()
+                    .fileType((String) uploadResult.get("resource_type"))
+                    .fileName(file.getOriginalFilename())
+                    .cloudinaryPublicId((String) uploadResult.get("public_id"))
+                    .url((String) uploadResult.get("secure_url"))
+                    .product(product)
+                    .build();
+            // Save in database
+            media = mediaRepo.save(media);
+
+            return mediaMapper.fromMediaToDto(media);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload image: " + file.getOriginalFilename(), e);
+        }
+    }
+
+    private void validateImageFiles(List<MultipartFile> files) {
+        files.forEach(
+                file -> {
                     if (file.isEmpty())
                         throw new IllegalArgumentException("File can not be empty");
 
@@ -90,13 +96,13 @@ public class MediaService {
                     // Image must be 5MB
                     if (file.getSize() > 5 * 1024 * 1024)
                         throw new IllegalArgumentException("Image size must be less than 5MB");
-                    return file;
                 }
         );
 
 
     }
-    public MediaDto uploadVideo(MultipartFile file, Long productId)  {
+
+    public MediaDto uploadVideo(MultipartFile file, Long productId) {
 
         validateVideoFile(file);
         Product product = productService.getProductForOthersClasses(productId);
@@ -116,7 +122,7 @@ public class MediaService {
 
         try {
             uploadResult = cloudinary.uploader().upload(file.getBytes(), option);
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
 
@@ -140,14 +146,16 @@ public class MediaService {
             throw new IllegalArgumentException("File must be an video");
     }
 
-    public void deleteFile(String publicId)  {
+    public void deleteFile(String publicId) {
+        Media media = mediaRepo.findByCloudinaryPublicId(publicId).orElseThrow(() ->
+                new GlobalNotFoundException("There is no media with this public key: " + publicId));
+
         try {
-            Media media = mediaRepo.findByCloudinaryPublicId(publicId).orElseThrow(()-> new GlobalNotFoundException("There is no media with this public key: " + publicId));
             cloudinary.uploader().destroy(media.getCloudinaryPublicId(), ObjectUtils.asMap(
                     "resource_type", media.getFileType()
             ));
             mediaRepo.delete(media);
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
 

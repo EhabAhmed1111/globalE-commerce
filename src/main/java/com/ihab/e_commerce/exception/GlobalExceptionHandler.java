@@ -1,8 +1,7 @@
 package com.ihab.e_commerce.exception;
 
 
-import com.ihab.e_commerce.controller.response.GlobalExceptionResponse;
-import org.apache.hc.core5.http.HttpConnection;
+import com.ihab.e_commerce.rest.response.GlobalExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

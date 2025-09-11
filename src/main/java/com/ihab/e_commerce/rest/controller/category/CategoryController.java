@@ -1,15 +1,12 @@
-package com.ihab.e_commerce.controller.category;
+package com.ihab.e_commerce.rest.controller.category;
 
 
-import com.ihab.e_commerce.controller.response.GlobalSuccessResponse;
+import com.ihab.e_commerce.rest.response.GlobalSuccessResponse;
 import com.ihab.e_commerce.data.model.Category;
-import com.ihab.e_commerce.data.model.User;
 import com.ihab.e_commerce.service.category.CategoryService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Role;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

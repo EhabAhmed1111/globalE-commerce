@@ -1,7 +1,8 @@
 package com.ihab.e_commerce.service.product;
 
 
-import com.ihab.e_commerce.controller.response.ProductResponse;
+import com.ihab.e_commerce.data.model.Media;
+import com.ihab.e_commerce.rest.response.ProductResponse;
 import com.ihab.e_commerce.data.dto.ProductDto;
 import com.ihab.e_commerce.data.mapper.ProductMapper;
 import com.ihab.e_commerce.data.model.Category;
@@ -9,6 +10,7 @@ import com.ihab.e_commerce.data.model.Product;
 import com.ihab.e_commerce.data.repo.ProductRepo;
 import com.ihab.e_commerce.exception.GlobalNotFoundException;
 import com.ihab.e_commerce.service.category.CategoryService;
+import com.ihab.e_commerce.service.media.MediaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,7 @@ public class ProductService {
      * */
 
     final private CategoryService categoryService;
-
+    private final MediaService mediaService;
     final private ProductRepo productRepo;
     final private ProductMapper productMapper;
 
@@ -47,10 +49,20 @@ public class ProductService {
 
 
     public void deleteProduct(Long productId) {
-        productRepo.findById(productId).ifPresentOrElse(productRepo::delete,
-                () -> {
-                    throw new GlobalNotFoundException(" There is no product with id: " + productId);
-                });
+        Product product = getProductForOthersClasses(productId);
+
+        product.getMedia().forEach(
+                media -> {
+                    try {
+                        mediaService.deleteFile(media.getCloudinaryPublicId());
+                    } catch (Exception e) {
+                        log.error("Failed to delete media from Cloudinary: {}",
+                                media.getCloudinaryPublicId(), e);
+                    }
+                }
+        );
+        productRepo.delete(product);
+
     }
 
     // Should I add this
@@ -69,7 +81,7 @@ public class ProductService {
         product.setName(productDto.getProductName());
         product.setBrand(productDto.getBrand());
         product.setCategory(category);
-        product.setDescription(product.getDescription());
+        product.setDescription(productDto.getDescription());
         product.setPrice(productDto.getPrice());
 
         return product;

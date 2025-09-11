@@ -1,7 +1,7 @@
-package com.ihab.e_commerce.controller.media;
+package com.ihab.e_commerce.rest.controller.media;
 
 
-import com.ihab.e_commerce.controller.response.GlobalSuccessResponse;
+import com.ihab.e_commerce.rest.response.GlobalSuccessResponse;
 import com.ihab.e_commerce.data.dto.MediaDto;
 import com.ihab.e_commerce.service.media.MediaService;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +21,8 @@ public class MediaController {
     private final MediaService mediaService;
 
     @PostMapping("/{id}/image")
-    public ResponseEntity<GlobalSuccessResponse> uploadProductImage(
-            @RequestParam List<MultipartFile> files,
+    public ResponseEntity<GlobalSuccessResponse> uploadProductImages(
+            @RequestParam("files") List<MultipartFile> files,
             @PathVariable Long id){
         List<MediaDto> mediaDto = mediaService.uploadImage(files, id);
         return ResponseEntity.ok(new GlobalSuccessResponse("Image uploaded successfully", mediaDto));

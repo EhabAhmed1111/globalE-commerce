@@ -1,7 +1,7 @@
-package com.ihab.e_commerce.controller.product;
+package com.ihab.e_commerce.rest.controller.product;
 
-import com.ihab.e_commerce.controller.response.GlobalSuccessResponse;
-import com.ihab.e_commerce.controller.response.ProductResponse;
+import com.ihab.e_commerce.rest.response.GlobalSuccessResponse;
+import com.ihab.e_commerce.rest.response.ProductResponse;
 import com.ihab.e_commerce.data.dto.ProductDto;
 import com.ihab.e_commerce.service.product.ProductService;
 import lombok.RequiredArgsConstructor;

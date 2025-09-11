@@ -20,6 +20,7 @@ public class MediaMapper {
                 .uploadedAt(media.getUploadedAt())
                 .build();
     }
+
     public Media fromDtoToMedia(MediaDto media) {
         return Media.builder()
                 .url(media.getUrl())
@@ -31,26 +32,14 @@ public class MediaMapper {
     }
 
     public List<MediaDto> fromListOfMediaToListOfDto(List<Media> medias) {
-        return medias.stream().map(
-                media -> MediaDto.builder()
-                        .url(media.getUrl())
-                        .fileName(media.getFileName())
-                        .cloudinaryPublicId(media.getCloudinaryPublicId())
-                        .fileType(media.getFileType())
-                        .uploadedAt(media.getUploadedAt())
-                        .build()
-        ).collect(Collectors.toList());
+        return medias.stream()
+                .map(this::fromMediaToDto)
+                .collect(Collectors.toList());
     }
 
     public List<Media> fromDtoToListOfMedia(List<MediaDto> medias) {
-        return medias.stream().map(
-                media -> Media.builder()
-                        .url(media.getUrl())
-                        .fileName(media.getFileName())
-                        .cloudinaryPublicId(media.getCloudinaryPublicId())
-                        .fileType(media.getFileType())
-                        .uploadedAt(media.getUploadedAt())
-                        .build()
-        ).collect(Collectors.toList());
+        return medias.stream()
+                .map(this::fromDtoToMedia)
+                .collect(Collectors.toList());
     }
 }

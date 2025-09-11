@@ -1,4 +1,4 @@
-package com.ihab.e_commerce.controller.response;
+package com.ihab.e_commerce.rest.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
