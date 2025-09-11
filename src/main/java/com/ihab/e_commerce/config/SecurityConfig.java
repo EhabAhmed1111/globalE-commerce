@@ -37,6 +37,10 @@ public class SecurityConfig {
                         request
                                 .requestMatchers("/api/v1/auth/**")
                                 .permitAll()
+                                .requestMatchers(GET, "/api/v1/products/**")
+                                .permitAll()
+                                .requestMatchers(GET, "/api/v1/categories/**")
+                                .permitAll()
 //                                .requestMatchers(GET,"/api/v1/category/**")
 //                                .permitAll()
 //                                .requestMatchers(POST,"/api/v1/category/**").hasRole(ADMIN.name())

@@ -1,4 +1,4 @@
-package com.ihab.e_commerce.controller;
+package com.ihab.e_commerce.rest;
 
 
 import lombok.RequiredArgsConstructor;

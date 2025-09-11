@@ -1,4 +1,4 @@
-package com.ihab.e_commerce.controller.response;
+package com.ihab.e_commerce.rest.response;
 
 import com.ihab.e_commerce.data.dto.MediaDto;
 import lombok.AllArgsConstructor;

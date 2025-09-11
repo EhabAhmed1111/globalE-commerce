@@ -1,4 +1,4 @@
-package com.ihab.e_commerce.controller.request;
+package com.ihab.e_commerce.rest.request;
 
 
 import lombok.AllArgsConstructor;
