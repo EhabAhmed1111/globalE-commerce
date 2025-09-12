@@ -24,13 +24,13 @@ services:
       - db-volumes:/var/lib/postgres/data
 
   liquibase:
-    image: liquibase
+    image: liquibase/liquibase
     depends_on:
       - postgres
     volumes:
       - ./src/main/resources/db/changelog:/liquibase/changelog
     command:
-      --url=jdbc:postgresql://postgres:5432/ecommerce
+      --url=jdbc:postgresql://postgres:5432/postgres
       --username=postgres
       --password=postgres
       --changeLogFile=changelog/changelog.sql

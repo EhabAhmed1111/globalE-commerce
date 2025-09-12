@@ -19,13 +19,17 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "_user")
 public class User implements UserDetails {
-
+// todo createdAt
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String firstName;
     private String lastName;
+
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
