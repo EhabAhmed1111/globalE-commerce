@@ -35,11 +35,11 @@ there will be relation with
     private String name;
 
     @CreationTimestamp
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, name = "update_at")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(nullable = false)
+    @Column(nullable = false, name = "update_at")
     private LocalDateTime updatedAt;
 
     @JsonIgnore
