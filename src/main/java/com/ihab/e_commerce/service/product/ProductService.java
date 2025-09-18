@@ -43,8 +43,7 @@ public class ProductService {
 
     public ProductResponse addProduct(ProductDto productDto) {
         Product product = productMapper.fromDtoToProduct(productDto);
-        productRepo.save(product);
-        return productMapper.fromProductToProductResponse(product);
+        return productMapper.fromProductToProductResponse(productRepo.save(product));
     }
 
 
@@ -56,8 +55,16 @@ public class ProductService {
                     try {
                         mediaService.deleteFile(media.getCloudinaryPublicId());
                     } catch (Exception e) {
+                        /*
+                         * exception.getCause() = Exception
+                         * why getCause()
+                         * in method I catch Exception
+                         * but I wrapped it in runtime exception so basically
+                         * the thrown exception will be runtime but the cause that make the runtime thrown will be the Exception which is IOException
+                         * */
                         log.error("Failed to delete media from Cloudinary: {}",
                                 media.getCloudinaryPublicId(), e);
+                        throw new RuntimeException(e);
                     }
                 }
         );
