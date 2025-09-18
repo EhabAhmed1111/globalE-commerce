@@ -82,11 +82,6 @@ class CategoryServiceTest {
     void getCategoryById_ShouldThrowException_WhenIdIsIncorrect() {
         // Given
         Long nonExistedId = 999L;
-        Category category = Category.builder()
-                .id(1L)
-                .name("Electronic")
-                .build();
-
         when(categoryRepo.findById(nonExistedId)).thenReturn(Optional.empty());
 
         // When
