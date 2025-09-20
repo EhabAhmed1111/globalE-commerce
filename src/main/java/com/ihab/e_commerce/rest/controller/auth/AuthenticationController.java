@@ -3,7 +3,7 @@ package com.ihab.e_commerce.rest.controller.auth;
 import com.ihab.e_commerce.rest.request.AuthenticationRequest;
 import com.ihab.e_commerce.rest.request.RegisterRequest;
 import com.ihab.e_commerce.rest.response.GlobalSuccessResponse;
-import com.ihab.e_commerce.service.auth.AuthService;
+import com.ihab.e_commerce.service.user.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
