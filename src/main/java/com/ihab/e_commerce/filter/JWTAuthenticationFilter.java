@@ -1,6 +1,6 @@
 package com.ihab.e_commerce.filter;
 
-import com.ihab.e_commerce.service.auth.JwtService;
+import com.ihab.e_commerce.service.user.auth.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

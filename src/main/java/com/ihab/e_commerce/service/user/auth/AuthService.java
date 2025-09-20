@@ -1,4 +1,4 @@
-package com.ihab.e_commerce.service.auth;
+package com.ihab.e_commerce.service.user.auth;
 
 
 import com.ihab.e_commerce.rest.request.AuthenticationRequest;
