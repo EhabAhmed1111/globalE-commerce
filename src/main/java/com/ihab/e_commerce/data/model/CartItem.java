@@ -35,4 +35,8 @@ public class CartItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id")
     private Cart cart;
+
+    public void setTotalPrice(){
+        this.totalPrice = this.unitePrice.multiply(BigDecimal.valueOf(this.quantity));
+    }
 }
