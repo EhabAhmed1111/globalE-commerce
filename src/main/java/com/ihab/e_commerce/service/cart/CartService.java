@@ -10,16 +10,14 @@ import com.ihab.e_commerce.exception.GlobalNotFoundException;
 import com.ihab.e_commerce.service.product.ProductService;
 import com.ihab.e_commerce.service.user.main.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CartService {
-
+// todo(make addProduct to try to find cart if its not exist we could create another cart)
     private final CartRepo cartRepo;
     private final UserService userService;
     private final CartItemRepo cartItemRepo;
