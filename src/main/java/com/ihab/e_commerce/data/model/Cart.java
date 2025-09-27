@@ -28,9 +28,9 @@ public class Cart {
     @Column(name = "total_price")
     private BigDecimal totalPrice = BigDecimal.ZERO;
 
-//    @Column(name = "is_active")
-//    @BooleanFlag
-//    private Boolean isActive = true;
+    @Column(name = "is_active")
+    @BooleanFlag
+    private Boolean isActive = true;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
