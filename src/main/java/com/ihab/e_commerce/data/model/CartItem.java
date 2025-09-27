@@ -2,8 +2,11 @@ package com.ihab.e_commerce.data.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 
 @Getter
@@ -24,6 +27,13 @@ public class CartItem {
 
     @Column(name = "total_price")
     private BigDecimal totalPrice;
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @CreationTimestamp
+    @Column(name="creates_at")
+    private LocalDateTime createdAt;
 
     private Integer quantity;
 
