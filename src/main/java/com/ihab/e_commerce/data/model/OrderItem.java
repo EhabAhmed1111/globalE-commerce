@@ -1,5 +1,6 @@
 package com.ihab.e_commerce.data.model;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -8,25 +9,24 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Builder
 @Entity
-@Table(name = "cart_item")
-public class CartItem {
+@Table(name="order_item")
+public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "unite_price")
-    private BigDecimal unitePrice;
-
     @Column(name = "total_price")
     private BigDecimal totalPrice;
+
+    @Column(name = "unite_price")
+    private BigDecimal unitePrice;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
@@ -38,16 +38,11 @@ public class CartItem {
 
     private Integer quantity;
 
-    // UniDirection
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
-
-    public void setTotalPrice(){
-        this.totalPrice = this.unitePrice.multiply(BigDecimal.valueOf(this.quantity));
-    }
+    @JoinColumn(name = "order_id")
+    private Order order;
 }

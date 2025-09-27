@@ -103,8 +103,13 @@ public class CartService {
     }
 
     public Cart getCartById(Long cartId) {
-        return cartRepo.findById(cartId).orElseThrow(
-                () -> new GlobalNotFoundException("There is no cart with id: " + cartId)
+        return cartRepo.findById(cartId).orElseGet(
+                () -> {
+                    // If cart not exist
+                    Cart cart = new Cart();
+                    cart.setUser(userService.loadCurrentUser());
+                    return cartRepo.save(cart);
+                }
         );
     }
 
