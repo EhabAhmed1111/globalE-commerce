@@ -1,6 +1,7 @@
 package com.ihab.e_commerce.data.model;
 
 
+import com.ihab.e_commerce.data.enums.OrderStatues;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -34,6 +35,10 @@ public class Order {
     @CreationTimestamp
     @Column(name="creates_at")
     private LocalDateTime createdAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_statues")
+    private OrderStatues orderStatues;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

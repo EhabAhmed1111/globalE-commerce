@@ -12,12 +12,13 @@ import com.ihab.e_commerce.service.user.main.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CartService {
-// todo(make addProduct to try to find cart if its not exist we could create another cart)
+// todo(if cart isActive is false there should be another cart)
     private final CartRepo cartRepo;
     private final UserService userService;
     private final CartItemRepo cartItemRepo;
@@ -100,6 +101,10 @@ public class CartService {
     // Reading OP
     public Cart getCartByUserId(Long userId) {
         return cartRepo.findByUserId(userId);
+    }
+
+    public List<Cart> getAllCartByUserId(Long userId) {
+        return cartRepo.findAllByUserId(userId);
     }
 
     public Cart getCartById(Long cartId) {
