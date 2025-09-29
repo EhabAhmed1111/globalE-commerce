@@ -33,7 +33,7 @@ public class CartItem {
     private LocalDateTime updatedAt;
 
     @CreationTimestamp
-    @Column(name="creates_at")
+    @Column(name="created_at")
     private LocalDateTime createdAt;
 
     private Integer quantity;
