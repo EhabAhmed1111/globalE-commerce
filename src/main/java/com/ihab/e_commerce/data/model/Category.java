@@ -35,18 +35,18 @@ there will be relation with
     private String name;
 
     @CreationTimestamp
-    @Column(nullable = false, updatable = false, name = "update_at")
+    @Column(nullable = false, updatable = false, name = "created_at")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(nullable = false, name = "update_at")
+    @Column(nullable = false, name = "updated_at")
     private LocalDateTime updatedAt;
 
     @JsonIgnore
     @OneToMany(cascade = {
             CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH
     }, mappedBy = "category", fetch = FetchType.LAZY)
-    ArrayList<Product> products ;
+    private ArrayList<Product> products ;
 
 
 }

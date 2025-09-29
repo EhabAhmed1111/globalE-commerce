@@ -37,7 +37,7 @@ public class Cart {
     private LocalDateTime updatedAt;
 
     @CreationTimestamp
-    @Column(name="creates_at")
+    @Column(name="created_at")
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
