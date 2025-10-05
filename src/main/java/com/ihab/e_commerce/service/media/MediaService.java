@@ -33,16 +33,14 @@ public class MediaService {
 // todo add logger
     private final Cloudinary cloudinary;
     private final MediaRepo mediaRepo;
-    private final ProductService productService;
     private final MediaMapper mediaMapper;
 
     // Should I get make download method???
 
     // Maybe we change class response name
-    public List<MediaDto> uploadImage(List<MultipartFile> files, Long productId) {
+    public List<MediaDto> uploadImage(List<MultipartFile> files, Product product) {
         validateImageFiles(files);
-        // TODO(Change this method in product)
-        Product product = productService.getProductForOthersClasses(productId);
+
 
 
         List<MediaDto> mediaDto = files.stream().map(
@@ -102,10 +100,10 @@ public class MediaService {
 
     }
 
-    public MediaDto uploadVideo(MultipartFile file, Long productId) {
+    public MediaDto uploadVideo(MultipartFile file, Product product) {
 
         validateVideoFile(file);
-        Product product = productService.getProductForOthersClasses(productId);
+
 
 
         String uniqueId = UUID.randomUUID().toString();

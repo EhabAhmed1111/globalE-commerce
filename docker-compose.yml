@@ -2,6 +2,8 @@ version: "3.7"
 #8080(host port number):8080(container one)
 services:
   app:
+    depends_on:
+      - postgres
     build: .
     ports:
       - target: 8080
@@ -14,29 +16,30 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+      POSTGRES_DB: e-commerce
     ports:
       - target: 5432 #the port in container
         published: 5200
     networks:
       - backend-network
     volumes:
-      - db-volumes:/var/lib/postgres/data
+      - db-volumes:/var/lib/postgresql/data
 
-  liquibase:
-    image: liquibase/liquibase
-    depends_on:
-      - postgres
-    volumes:
-      - ./src/main/resources/db/changelog:/liquibase/changelog
-    command:
-      --url=jdbc:postgresql://postgres:5432/postgres
-      --username=postgres
-      --password=postgres
-      --changeLogFile=changelog/changelog.sql
-      update
-    networks:
-      - backend-network
+#  liquibase:
+#    image: liquibase/liquibase
+#    depends_on:
+#      - postgres
+#    volumes:
+#      - ./src/main/resources/db/changelog:/liquibase/changelog
+#    command:
+#      #those are env variable
+#      --url=jdbc:postgresql://postgres:5432/e-commerce
+#      --username=postgres
+#      --password=postgres
+#      --changeLogFile=changelog/changelog.sql
+#      update
+#    networks:
+#      - backend-network
 
 networks:
   backend-network:
