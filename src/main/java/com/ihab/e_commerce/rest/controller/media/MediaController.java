@@ -1,9 +1,11 @@
 package com.ihab.e_commerce.rest.controller.media;
 
 
+import com.ihab.e_commerce.data.model.Product;
 import com.ihab.e_commerce.rest.response.GlobalSuccessResponse;
 import com.ihab.e_commerce.data.dto.MediaDto;
 import com.ihab.e_commerce.service.media.MediaService;
+import com.ihab.e_commerce.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +21,14 @@ import java.util.List;
 public class MediaController {
 
     private final MediaService mediaService;
+    private final ProductService productService;
 
     @PostMapping("/{id}/image")
     public ResponseEntity<GlobalSuccessResponse> uploadProductImages(
             @RequestParam("files") List<MultipartFile> files,
             @PathVariable Long id){
-        List<MediaDto> mediaDto = mediaService.uploadImage(files, id);
+        Product product = productService.getProductForOthersClasses(id);
+        List<MediaDto> mediaDto = mediaService.uploadImage(files, product);
         return ResponseEntity.ok(new GlobalSuccessResponse("Image uploaded successfully", mediaDto));
     }
 
@@ -32,7 +36,8 @@ public class MediaController {
     public ResponseEntity<GlobalSuccessResponse> uploadProductVideo(
             @RequestParam MultipartFile file,
             @PathVariable Long id){
-        MediaDto mediaDto = mediaService.uploadVideo(file, id);
+        Product product = productService.getProductForOthersClasses(id);
+        MediaDto mediaDto = mediaService.uploadVideo(file, product);
         return ResponseEntity.ok(new GlobalSuccessResponse("Video uploaded successfully", mediaDto));
     }
 

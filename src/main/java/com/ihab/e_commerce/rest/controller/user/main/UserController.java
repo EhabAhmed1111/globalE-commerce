@@ -22,13 +22,13 @@ public class UserController {
     }
 
     // This for admin
-    @DeleteMapping("/${userId}")
+    @DeleteMapping("/{userId}")
     public ResponseEntity<GlobalSuccessResponse> deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
         return ResponseEntity.ok(new GlobalSuccessResponse("User deleted", null));
     }
 
-    @PutMapping("/${currentUserId}")
+    @PutMapping("/{currentUserId}")
     public ResponseEntity<GlobalSuccessResponse> updateUser(@PathVariable Long currentUserId, @RequestBody User updatReqUser) {
         User user = userService.updateUser(updatReqUser, currentUserId);
         return ResponseEntity.ok(new GlobalSuccessResponse("User updated successfully", user));

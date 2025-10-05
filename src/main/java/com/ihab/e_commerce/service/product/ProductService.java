@@ -58,7 +58,7 @@ public class ProductService {
                         /*
                          * exception.getCause() = Exception
                          * why getCause()
-                         * in method I catch Exception
+                         * in method I catch Exception,
                          * but I wrapped it in runtime exception so basically
                          * the thrown exception will be runtime but the cause that make the runtime thrown will be the Exception which is IOException
                          * */

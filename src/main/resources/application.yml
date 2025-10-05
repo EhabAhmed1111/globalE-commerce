@@ -5,7 +5,7 @@ spring:
   #same as here
   datasource:
     #spring.datasource.url
-    url: jdbc:postgresql://postgres:5432/postgres
+    url: jdbc:postgresql://postgres:5432/e-commerce
     #spring.datasource.username=postgres
     username: postgres
     #spring.datasource.password=postgres
@@ -15,9 +15,9 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/changelog.sql
   jpa:
-    hibernate:
+#    hibernate:
       #spring.jpa.hibernate.ddl-auto
-      ddl-auto: update
+#      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
@@ -34,5 +34,32 @@ cloudinary:
   cloud_name: dpc0ohu0g
   api_key: 399568424786841
   api_secret: jaLvAsGQArQWNBpxuPLEuHd9-ZA
+
+JWT:
+  secret_key: "c1a7a6461e65ce4e8a362126e3d3b80e16bc400dea0a48a801537347fc071327"
 api:
   prefix: "/api/v1"
+
+
+
+
+#for test
+#app:
+ # api_key: ${MY_API_KEY}
+  #database_url: ${BD_URL:jdbc:postgresql://postgres:5432/postgres}
+# i can save this apikey in my system by
+# using terminal   export MY_API_KEY="1234"
+#or i can do it from the code editor
+#ok as you can see in db i use DB_URL which is env var but if there was not one in my system or editor
+#then as an alternative it will take the url i give to it which i can put after ":"
+
+
+
+#so if i move the executable file of the app in another place i need to give it the env var when i try to run the file
+#so if you try to run file from terminal
+# -- is the way to pass env var in terminal
+#java -jar target/ecommerce/version.jar  --MY_API_KEY="123456" --BD_URL="adsljlask
+#
+#
+#
+#
