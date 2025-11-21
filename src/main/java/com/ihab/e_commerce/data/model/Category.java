@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Set;
 
 
 @Getter
@@ -46,7 +47,7 @@ there will be relation with
     @OneToMany(cascade = {
             CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH
     }, mappedBy = "category", fetch = FetchType.LAZY)
-    private ArrayList<Product> products ;
+    private Set<Product> products ;
 
 
 }

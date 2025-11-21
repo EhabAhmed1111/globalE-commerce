@@ -52,7 +52,7 @@ public class CategoryController {
     //ADMIN roles
 
     @PostMapping()
-    public ResponseEntity<GlobalSuccessResponse> addCategory(HttpServletRequest request, @RequestBody Category category) {
+    public ResponseEntity<GlobalSuccessResponse> addCategory(@RequestBody Category category) {
         Category addedCategory = categoryService.addCategory(category);
         return ResponseEntity.ok(new GlobalSuccessResponse(
                 "adding successfully",

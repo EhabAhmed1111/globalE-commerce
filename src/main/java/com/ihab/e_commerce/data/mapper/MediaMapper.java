@@ -4,6 +4,8 @@ import com.ihab.e_commerce.data.dto.MediaDto;
 import com.ihab.e_commerce.data.model.Media;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,13 +34,16 @@ public class MediaMapper {
     }
 
     public List<MediaDto> fromListOfMediaToListOfDto(List<Media> medias) {
-        return medias.stream()
+        return medias==null? Collections.emptyList() :
+                medias
+                .stream()
                 .map(this::fromMediaToDto)
                 .collect(Collectors.toList());
     }
 
     public List<Media> fromDtoToListOfMedia(List<MediaDto> medias) {
-        return medias.stream()
+        return medias
+                .stream()
                 .map(this::fromDtoToMedia)
                 .collect(Collectors.toList());
     }

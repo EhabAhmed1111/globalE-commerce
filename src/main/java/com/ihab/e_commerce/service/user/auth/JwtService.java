@@ -19,6 +19,7 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
+
 /*
     *this is most used tech*
 session based
@@ -26,6 +27,7 @@ cookie based
 api token
 jwt
  */
+
     @Value("${JWT.secret_key}")
     private String SECRET_KEY ;
 

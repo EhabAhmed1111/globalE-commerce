@@ -15,6 +15,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -27,6 +31,14 @@ public class ProductService {
     private final MediaService mediaService;
     final private ProductRepo productRepo;
     final private ProductMapper productMapper;
+
+    public List<ProductResponse> getAllProduct() {
+        List<Product> products = productRepo.findAll();
+        return products
+                .stream()
+                .map(productMapper::fromProductToProductResponse)
+                .collect(Collectors.toList());
+    }
 
     public ProductResponse getProduct(Long productId) {
         Product product = productRepo.findById(productId).orElseThrow(() -> new GlobalNotFoundException(" There is no product with id: " + productId)
@@ -43,7 +55,8 @@ public class ProductService {
 
     public ProductResponse addProduct(ProductDto productDto) {
         Product product = productMapper.fromDtoToProduct(productDto);
-        return productMapper.fromProductToProductResponse(productRepo.save(product));
+        productRepo.save(product);
+        return productMapper.fromProductToProductResponse(product);
     }
 
 
