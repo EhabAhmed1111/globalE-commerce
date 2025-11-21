@@ -35,7 +35,6 @@ public class ProductMapper {
                 .category(category)
                 .brand(productDto.getBrand())
                 .amount(productDto.getAmount())
-                .category(category)
                 .build();
     }
 
