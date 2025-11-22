@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 public class ProductService {
     /*
      * TODO(ADD GET-ALL-PRODUCT-WITH-CATEGORY)
+            *  and with price and with brand
      * */
 
     final private CategoryService categoryService;

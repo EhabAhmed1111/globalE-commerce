@@ -27,6 +27,17 @@ public class GlobalExceptionHandler {
                         .build();
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler
+    public ResponseEntity<GlobalExceptionResponse> handleConflictException(GlobalConflictException globalConflictException){
+
+        GlobalExceptionResponse exceptionResponse =
+                GlobalExceptionResponse.builder()
+                        .date(System.currentTimeMillis())
+                        .status(HttpStatus.CONFLICT.value())
+                        .message(globalConflictException.getMessage())
+                        .build();
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.CONFLICT);
+    }
 
     @ExceptionHandler
     public ResponseEntity<GlobalExceptionResponse> handleIllegalArgException(IllegalArgumentException exception){

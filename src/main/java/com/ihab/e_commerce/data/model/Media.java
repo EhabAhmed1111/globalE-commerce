@@ -15,7 +15,9 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "media")
 public class Media {
-
+   /* todo here there should be a cover photo it will be here to avoid circular dep
+   * i will make it boolean property(isCover)
+    * */
 
     /*
     * ok new plan I decided to use cloudinary as my storage
@@ -37,6 +39,10 @@ public class Media {
 
     @Column(name = "cloudinary_public_id", unique = true)
     private String cloudinaryPublicId; // Important for deletion
+
+    /*-- product cover image ---*/
+    @Column(name="is_cover")
+    private Boolean isCoverImage = false;
 
     @CreationTimestamp
     @Column(name = "uploaded_at")
