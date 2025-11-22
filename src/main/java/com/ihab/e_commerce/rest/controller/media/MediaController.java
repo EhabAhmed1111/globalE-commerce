@@ -22,10 +22,26 @@ public class MediaController {
 
     // todo change the service from here to service layer
     // todo there will be only one service which will be mediaService
-    // todo add end point to add cover image then test the app
 
     private final MediaService mediaService;
     private final ProductService productService;
+
+    /* upload cover image */
+    @PostMapping("/image/{id}/cover")
+    public ResponseEntity<GlobalSuccessResponse> uploadProductCover(
+            @RequestParam("file") MultipartFile file,
+            @PathVariable Long id){
+        Product product = productService.getProductForOthersClasses(id);
+        MediaDto mediaDto = mediaService.uploadCoverImage(file, product);
+        return ResponseEntity.ok(new GlobalSuccessResponse("Cover Image uploaded successfully", mediaDto));
+    }
+
+    @GetMapping("/image/{id}/cover")
+    public ResponseEntity<GlobalSuccessResponse> uploadProductCover(@PathVariable Long id){
+        Product product = productService.getProductForOthersClasses(id);
+        MediaDto mediaDto = mediaService.getCoverImage(product);
+        return ResponseEntity.ok(new GlobalSuccessResponse("Cover Image fetched successfully", mediaDto));
+    }
 
     @PostMapping("/{id}/image")
     public ResponseEntity<GlobalSuccessResponse> uploadProductImages(
