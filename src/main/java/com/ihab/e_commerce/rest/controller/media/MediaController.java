@@ -20,6 +20,10 @@ import java.util.List;
 @RequestMapping("${api.prefix}/medias")
 public class MediaController {
 
+    // todo change the service from here to service layer
+    // todo there will be only one service which will be mediaService
+    // todo add end point to add cover image then test the app
+
     private final MediaService mediaService;
     private final ProductService productService;
 

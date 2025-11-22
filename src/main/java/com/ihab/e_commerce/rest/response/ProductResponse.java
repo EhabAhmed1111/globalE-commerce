@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ProductResponse {
 // This is what user will see
+/* todo here there should be an id*/
     private String productName;
     private BigDecimal price;
     private String brand;

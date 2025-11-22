@@ -9,6 +9,7 @@ import com.ihab.e_commerce.data.model.Media;
 import com.ihab.e_commerce.data.model.Product;
 import com.ihab.e_commerce.data.repo.MediaRepo;
 import com.ihab.e_commerce.data.repo.ProductRepo;
+import com.ihab.e_commerce.exception.GlobalConflictException;
 import com.ihab.e_commerce.exception.GlobalNotFoundException;
 import com.ihab.e_commerce.service.product.ProductService;
 import jakarta.transaction.Transactional;
@@ -30,7 +31,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class MediaService {
-// todo add logger
+    // todo add logger
+    //todo make the product service here instead of controller
+    //todo if there are circular dep we use pattern to solve it
     private final Cloudinary cloudinary;
     private final MediaRepo mediaRepo;
     private final MediaMapper mediaMapper;
@@ -42,7 +45,6 @@ public class MediaService {
         validateImageFiles(files);
 
 
-
         List<MediaDto> mediaDto = files.stream().map(
                 file -> {
                     return uploadSingleImage(file, product);
@@ -50,6 +52,43 @@ public class MediaService {
         ).collect(Collectors.toList());
 
         return mediaDto;
+    }
+
+    /*   adding covering image */
+    public MediaDto uploadCoverImage(MultipartFile file, Product product) {
+        validateImageFile(file);
+       Media media =  product.getMedia().stream().filter(
+                Media::getIsCoverImage
+        ).findFirst().orElse(
+                mediaMapper.fromDtoToMedia(uploadSingleImage(file, product))
+       );
+       /*   if there are cover already  */
+        if (media.getIsCoverImage()){
+            media.setIsCoverImage(false);
+            Media coverMedia = updateCoverImage(media, product);
+
+            return mediaMapper.fromMediaToDto(mediaRepo.save(coverMedia));
+        }
+
+        /*   if there is no cover yet   */
+        Media updatedMedia = updateCoverImage(media, product);
+        return mediaMapper.fromMediaToDto(mediaRepo.save(updatedMedia));
+    }
+
+
+    private Media updateCoverImage(Media media, Product product) {
+        media.setIsCoverImage(true);
+        return media;
+    }
+
+    public MediaDto getCoverImage(Product product) {
+        Media media = product.getMedia()
+                .stream()
+                .filter(Media::getIsCoverImage)
+                .findFirst()
+                .orElseThrow(() -> new GlobalNotFoundException("there is no cover image to this product"));
+
+        return mediaMapper.fromMediaToDto(media);
     }
 
     private MediaDto uploadSingleImage(MultipartFile file, Product product) {
@@ -81,29 +120,29 @@ public class MediaService {
         }
     }
 
+    private void validateImageFile(MultipartFile file) {
+        if (file.isEmpty())
+            throw new IllegalArgumentException("File can not be empty");
+
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/"))
+            throw new IllegalArgumentException("File must be an image");
+
+        // Image must be 5MB
+        if (file.getSize() > 5 * 1024 * 1024)
+            throw new IllegalArgumentException("Image size must be less than 5MB");
+
+    }
+
     private void validateImageFiles(List<MultipartFile> files) {
         files.forEach(
-                file -> {
-                    if (file.isEmpty())
-                        throw new IllegalArgumentException("File can not be empty");
-
-                    String contentType = file.getContentType();
-                    if (contentType == null || !contentType.startsWith("image/"))
-                        throw new IllegalArgumentException("File must be an image");
-
-                    // Image must be 5MB
-                    if (file.getSize() > 5 * 1024 * 1024)
-                        throw new IllegalArgumentException("Image size must be less than 5MB");
-                }
+                this::validateVideoFile
         );
-
-
     }
 
     public MediaDto uploadVideo(MultipartFile file, Product product) {
 
         validateVideoFile(file);
-
 
 
         String uniqueId = UUID.randomUUID().toString();
