@@ -1,3 +1,4 @@
+
 package com.ihab.e_commerce.service.media;
 
 
@@ -46,9 +47,9 @@ public class MediaService {
 
 
         List<MediaDto> mediaDto = files.stream().map(
-                file -> {
-                    return uploadSingleImage(file, product);
-                }
+                file -> mediaMapper.fromMediaToDto(uploadSingleImage(file, product))
+
+
         ).collect(Collectors.toList());
 
         return mediaDto;
@@ -57,41 +58,45 @@ public class MediaService {
     /*   adding covering image */
     public MediaDto uploadCoverImage(MultipartFile file, Product product) {
         validateImageFile(file);
-       Media media =  product.getMedia().stream().filter(
-                Media::getIsCoverImage
+        Media media =  product.getMedia().stream().filter(
+                Media::isCoverImage
         ).findFirst().orElse(
-                mediaMapper.fromDtoToMedia(uploadSingleImage(file, product))
-       );
-       /*   if there are cover already  */
-        if (media.getIsCoverImage()){
-            media.setIsCoverImage(false);
-            Media coverMedia = updateCoverImage(media, product);
-
+                uploadSingleImage(file, product)
+        );
+        /*   update cover if there are already one  */
+        if (media.isCoverImage()){
+            /* here the image upload first */
+            Media coverMedia = uploadSingleImage(file, product);
+            /* here we remove last image */
+            media.setCoverImage(false);
+            mediaRepo.save(media);
+            /* here we put new image */
+            coverMedia.setCoverImage(true);
             return mediaMapper.fromMediaToDto(mediaRepo.save(coverMedia));
         }
 
         /*   if there is no cover yet   */
-        Media updatedMedia = updateCoverImage(media, product);
-        return mediaMapper.fromMediaToDto(mediaRepo.save(updatedMedia));
+        media.setCoverImage(true);
+        return mediaMapper.fromMediaToDto(mediaRepo.save(media));
     }
 
 
-    private Media updateCoverImage(Media media, Product product) {
-        media.setIsCoverImage(true);
-        return media;
-    }
+//    private Media updateCoverImage(Media media, Product product) {
+//        media.setIsCoverImage(true);
+//        return media;
+//    }
 
     public MediaDto getCoverImage(Product product) {
         Media media = product.getMedia()
                 .stream()
-                .filter(Media::getIsCoverImage)
+                .filter(Media::isCoverImage)
                 .findFirst()
                 .orElseThrow(() -> new GlobalNotFoundException("there is no cover image to this product"));
 
         return mediaMapper.fromMediaToDto(media);
     }
 
-    private MediaDto uploadSingleImage(MultipartFile file, Product product) {
+    private Media uploadSingleImage(MultipartFile file, Product product) {
         try {
             String uniqueId = UUID.randomUUID().toString();
             var option = ObjectUtils.asMap(
@@ -111,9 +116,9 @@ public class MediaService {
                     .product(product)
                     .build();
             // Save in database
-            media = mediaRepo.save(media);
+            return mediaRepo.save(media);
 
-            return mediaMapper.fromMediaToDto(media);
+//            return mediaMapper.fromMediaToDto(media);
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to upload image: " + file.getOriginalFilename(), e);
@@ -136,7 +141,7 @@ public class MediaService {
 
     private void validateImageFiles(List<MultipartFile> files) {
         files.forEach(
-                this::validateVideoFile
+                this::validateImageFile
         );
     }
 

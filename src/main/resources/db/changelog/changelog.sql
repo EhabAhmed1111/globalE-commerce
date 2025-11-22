@@ -47,6 +47,7 @@ CREATE TABLE "media" (
 "file_name" VARCHAR(255),
 "file_type" VARCHAR(255),
 "cloudinary_public_id" VARCHAR(255) UNIQUE,
+"is_cover_image" BOOLEAN DEFAULT FALSE,
 "uploaded_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 "product_id" BIGINT NOT NULL,
 CONSTRAINT "media_pkey" PRIMARY KEY ("id"),

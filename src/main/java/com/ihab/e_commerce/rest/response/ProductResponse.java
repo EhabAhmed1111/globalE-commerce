@@ -15,7 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 public class ProductResponse {
 // This is what user will see
-/* todo here there should be an id*/
+/* todo here there should be an id
+*   and covering image url here*/
     private String productName;
     private BigDecimal price;
     private String brand;

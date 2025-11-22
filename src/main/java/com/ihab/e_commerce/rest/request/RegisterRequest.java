@@ -1,5 +1,6 @@
 package com.ihab.e_commerce.rest.request;
 
+import com.ihab.e_commerce.data.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,4 +15,5 @@ public class RegisterRequest {
     private String lastName;
     private String email;
     private String password;
+    private Role role;
 }

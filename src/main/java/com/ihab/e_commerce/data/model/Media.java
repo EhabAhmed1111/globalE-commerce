@@ -41,8 +41,8 @@ public class Media {
     private String cloudinaryPublicId; // Important for deletion
 
     /*-- product cover image ---*/
-    @Column(name="is_cover")
-    private Boolean isCoverImage = false;
+    @Column(name="is_cover_image", nullable = false)
+    private boolean isCoverImage = false;
 
     @CreationTimestamp
     @Column(name = "uploaded_at")
