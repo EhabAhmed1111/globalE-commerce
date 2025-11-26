@@ -40,9 +40,10 @@ public enum Role {
 
     public List<SimpleGrantedAuthority> getAuthorities() {
         var authorities = this.getPermissions().stream().map(
-                permission -> new SimpleGrantedAuthority(permission.name())
+                permission -> new SimpleGrantedAuthority(permission.getPermission())
         ).collect(Collectors.toList());
 
+        /* ROLE_ IS Prefix no need to insert it every time*/
         authorities.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
         return authorities;
     }

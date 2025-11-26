@@ -15,8 +15,10 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "media")
 public class Media {
-   /* todo here there should be a cover photo it will be here to avoid circular dep
-   * i will make it boolean property(isCover)
+   /* todo here there should be a cover photo it will be in product
+        * and it will be cover_id in product table
+        * and to avoid circular dep i will first create user with cover_id without any constraint
+        * then after the media table created i will alter the table to add the f_key constraint
     * */
 
     /*

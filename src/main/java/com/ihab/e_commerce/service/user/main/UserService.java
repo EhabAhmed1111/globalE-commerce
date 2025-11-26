@@ -3,7 +3,7 @@ package com.ihab.e_commerce.service.user.main;
 import com.ihab.e_commerce.data.model.User;
 import com.ihab.e_commerce.data.repo.UserRepository;
 import com.ihab.e_commerce.exception.GlobalNotFoundException;
-import com.ihab.e_commerce.service.user.auth.JwtService;
+import com.ihab.e_commerce.service.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +21,7 @@ public class UserService {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     // TODO(create UserDto)
+    // todo return the product with user
 
     public UserDetails getUserByEmail(String userName){
         return userDetailsService.loadUserByUsername(userName);

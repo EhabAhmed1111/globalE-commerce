@@ -18,7 +18,7 @@ import java.util.Set;
 @Setter
 @Builder
 @Entity
-@Table(name="order")
+@Table(name="customer_order")
 public class Order {
 
     @Id

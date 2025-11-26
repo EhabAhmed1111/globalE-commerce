@@ -1,6 +1,7 @@
 package com.ihab.e_commerce.data.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ihab.e_commerce.data.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,7 +23,8 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "_user")
 public class User implements UserDetails {
-
+/* todo make a relation between product and user
+*   this relation will define whose user own which product */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,6 +46,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    /* should I make it Cascade? */
+    @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private Set<Product> products;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Cart> carts;

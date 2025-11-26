@@ -20,6 +20,7 @@ public class MediaMapper {
                 .cloudinaryPublicId(media.getCloudinaryPublicId())
                 .fileType(media.getFileType())
                 .uploadedAt(media.getUploadedAt())
+                .isCoverImage(media.isCoverImage())
                 .build();
     }
 
@@ -30,6 +31,7 @@ public class MediaMapper {
                 .cloudinaryPublicId(media.getCloudinaryPublicId())
                 .fileType(media.getFileType())
                 .uploadedAt(media.getUploadedAt())
+                .isCoverImage(media.isCoverImage())
                 .build();
     }
 

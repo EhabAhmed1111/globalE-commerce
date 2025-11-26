@@ -1,6 +1,7 @@
 package com.ihab.e_commerce.data.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,9 +45,15 @@ public class Product {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    // The project may have more than one media, but it will have only one dir
+    // The product may have more than one media, but it will have only one dir
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "product")
     private List<Media> media;
+
+    @ManyToOne()
+    @JoinColumn(name = "user_id", nullable = false)
+    // todo make a dto for user and remove JsonIgnore
+    @JsonIgnore
+    private User vendor;
 
 
 }
