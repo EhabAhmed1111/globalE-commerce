@@ -28,6 +28,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler
+    public ResponseEntity<GlobalExceptionResponse> handleUnauthorizedActionException(GlobalUnauthorizedActionException globalUnauthorizedActionException){
+
+        GlobalExceptionResponse exceptionResponse =
+                GlobalExceptionResponse.builder()
+                        .date(System.currentTimeMillis())
+                        .status(HttpStatus.CONFLICT.value())
+                        .message(globalUnauthorizedActionException.getMessage())
+                        .build();
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.CONFLICT);
+    }
+    @ExceptionHandler
     public ResponseEntity<GlobalExceptionResponse> handleConflictException(GlobalConflictException globalConflictException){
 
         GlobalExceptionResponse exceptionResponse =

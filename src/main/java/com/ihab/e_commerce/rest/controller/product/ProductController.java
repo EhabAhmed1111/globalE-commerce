@@ -7,6 +7,7 @@ import com.ihab.e_commerce.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,18 +33,22 @@ public class ProductController {
     }
 
     @PostMapping
+    // no need for admin to create product
+    @PreAuthorize("(hasRole('VENDOR')) and (hasAuthority('vendor:create'))")
     public ResponseEntity<GlobalSuccessResponse> addProduct(@RequestBody ProductDto productDto) {
         ProductResponse product = productService.addProduct(productDto);
         return ResponseEntity.ok(new GlobalSuccessResponse(" Product fetched successfully", product));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("(hasAnyRole('ADMIN', 'VENDOR')) and (hasAnyAuthority('admin:delete', 'vendor:delete'))")
     public ResponseEntity<GlobalSuccessResponse> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok(new GlobalSuccessResponse(" Product fetched successfully", null));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("(hasRole('VENDOR')) and (hasAuthority('vendor:update'))")
     public ResponseEntity<GlobalSuccessResponse> updateProduct(@RequestBody ProductDto productDto, @PathVariable Long id) {
         ProductResponse product = productService.updateProduct(productDto, id);
         return ResponseEntity.ok(new GlobalSuccessResponse(" Product fetched successfully", product));

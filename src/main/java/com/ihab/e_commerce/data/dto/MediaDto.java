@@ -22,4 +22,5 @@ public class MediaDto {
     private String fileType;
     private String cloudinaryPublicId; // Important for deletion
     private LocalDateTime uploadedAt;
+    private boolean isCoverImage;
 }

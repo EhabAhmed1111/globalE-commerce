@@ -54,6 +54,7 @@ public class ProductMapper {
         List<Media> medias = product.getMedia();
 
         return ProductResponse.builder()
+                .id(product.getId())
                 .productName(product.getName())
                 .brand(product.getBrand())
                 .description(product.getDescription())
@@ -61,6 +62,7 @@ public class ProductMapper {
                 .amount(product.getAmount())
                 .price(product.getPrice())
                 .medias(mediaMapper.fromListOfMediaToListOfDto(medias))
+                .vendor(product.getVendor())
                 .build();
     }
     public Product fromResponseToProduct(ProductResponse productResponse){

@@ -7,6 +7,7 @@ import com.ihab.e_commerce.rest.request.RegisterRequest;
 import com.ihab.e_commerce.data.enums.Role;
 import com.ihab.e_commerce.data.model.User;
 import com.ihab.e_commerce.data.repo.UserRepository;
+import com.ihab.e_commerce.service.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +25,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public GlobalSuccessResponse register(RegisterRequest request) {
+        /* todo handel conflict email*/
         var user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
