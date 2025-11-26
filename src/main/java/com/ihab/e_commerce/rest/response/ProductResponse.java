@@ -1,6 +1,7 @@
 package com.ihab.e_commerce.rest.response;
 
 import com.ihab.e_commerce.data.dto.MediaDto;
+import com.ihab.e_commerce.data.dto.UserDto;
 import com.ihab.e_commerce.data.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,5 +27,5 @@ public class ProductResponse {
     private String categoryName;
     private List<MediaDto> medias;
     /* here we get the user */
-    private User vendor;
+    private UserDto vendor;
 }

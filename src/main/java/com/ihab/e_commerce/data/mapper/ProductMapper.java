@@ -1,5 +1,6 @@
 package com.ihab.e_commerce.data.mapper;
 
+import com.ihab.e_commerce.data.model.User;
 import com.ihab.e_commerce.rest.response.ProductResponse;
 import com.ihab.e_commerce.data.dto.MediaDto;
 import com.ihab.e_commerce.data.dto.ProductDto;
@@ -25,6 +26,8 @@ public class ProductMapper {
     private final CategoryService categoryService;
 
     private final MediaMapper mediaMapper;
+
+    private final UserMapper userMapper;
 
     public Product fromDtoToProduct(ProductDto productDto) {
         Category category = categoryService.getCategoryByName(productDto.getCategoryName());
@@ -52,7 +55,8 @@ public class ProductMapper {
     public ProductResponse fromProductToProductResponse(Product product){
         Category category = product.getCategory();
         List<Media> medias = product.getMedia();
-
+        // here we get user to map it to dto
+        User user = product.getVendor();
         return ProductResponse.builder()
                 .id(product.getId())
                 .productName(product.getName())
@@ -62,7 +66,7 @@ public class ProductMapper {
                 .amount(product.getAmount())
                 .price(product.getPrice())
                 .medias(mediaMapper.fromListOfMediaToListOfDto(medias))
-                .vendor(product.getVendor())
+                .vendor(userMapper.fromUserToDto(user))
                 .build();
     }
     public Product fromResponseToProduct(ProductResponse productResponse){

@@ -34,6 +34,7 @@ public class WebConfig {
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        /* (/**) this mean that all above apply on all controller*/
         source.registerCorsConfiguration("/**", config);
 
         return source;

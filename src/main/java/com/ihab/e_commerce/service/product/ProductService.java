@@ -1,7 +1,6 @@
 package com.ihab.e_commerce.service.product;
 
 
-import com.ihab.e_commerce.data.model.Media;
 import com.ihab.e_commerce.data.model.User;
 import com.ihab.e_commerce.exception.GlobalUnauthorizedActionException;
 import com.ihab.e_commerce.rest.response.ProductResponse;
@@ -16,11 +15,8 @@ import com.ihab.e_commerce.service.media.MediaService;
 import com.ihab.e_commerce.service.user.main.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
