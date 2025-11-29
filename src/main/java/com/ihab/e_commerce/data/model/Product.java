@@ -20,8 +20,8 @@ public class Product {
     /*
     there must be
      1-reviews
-     2-product owner
-     3-images
+     2-product owner done
+     3-images done
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,8 +51,6 @@ public class Product {
 
     @ManyToOne()
     @JoinColumn(name = "user_id", nullable = false)
-    // todo make a dto for user and remove JsonIgnore
-    @JsonIgnore
     private User vendor;
 
 

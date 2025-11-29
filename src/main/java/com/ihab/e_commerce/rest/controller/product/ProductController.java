@@ -32,6 +32,15 @@ public class ProductController {
         return ResponseEntity.ok(new GlobalSuccessResponse(" Product fetched successfully", products));
     }
 
+    /* here we get all product by vendor id */
+    @GetMapping("/vendor/{vendorId}")
+    public ResponseEntity<GlobalSuccessResponse> getAllProduct(
+            @PathVariable Long vendorId
+    ) {
+        List<ProductResponse> products = productService.getAllProductByVendorId(vendorId);
+        return ResponseEntity.ok(new GlobalSuccessResponse(" Product fetched successfully", products));
+    }
+
     @PostMapping
     // no need for admin to create product
     @PreAuthorize("(hasRole('VENDOR')) and (hasAuthority('vendor:create'))")

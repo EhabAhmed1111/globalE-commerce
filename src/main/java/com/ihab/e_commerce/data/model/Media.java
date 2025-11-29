@@ -43,6 +43,7 @@ public class Media {
     private String cloudinaryPublicId; // Important for deletion
 
     /*-- product cover image ---*/
+    @Builder.Default
     @Column(name="is_cover_image", nullable = false)
     private boolean isCoverImage = false;
 

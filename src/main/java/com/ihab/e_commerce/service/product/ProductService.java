@@ -28,8 +28,8 @@ import static com.ihab.e_commerce.data.enums.Role.ADMIN;
 public class ProductService {
     /*
      * TODO(ADD GET-ALL-PRODUCT-WITH-CATEGORY)
-            *  and with price and with brand
-            * get all product with vendor id
+     *  and with price and with brand
+     * get all product with vendor id
      * */
 
     final private CategoryService categoryService;
@@ -37,6 +37,18 @@ public class ProductService {
     final private ProductRepo productRepo;
     final private ProductMapper productMapper;
     final private UserService userService;
+
+
+
+    public List<ProductResponse> getAllProductByVendorId(Long vendorId) {
+        return userService
+                .getUserById(vendorId)
+                .getProducts()
+                .stream()
+                .map(productMapper::fromProductToProductResponse)
+                .collect(Collectors.toList());
+    }
+
 
     public List<ProductResponse> getAllProduct() {
         List<Product> products = productRepo.findAll();
@@ -58,7 +70,7 @@ public class ProductService {
         );
     }
 
-// I should add the id from token
+    // I should add the id from token
     public ProductResponse addProduct(ProductDto productDto) {
         Product product = productMapper.fromDtoToProduct(productDto);
         // here we got the user
@@ -71,7 +83,7 @@ public class ProductService {
     public void deleteProduct(Long productId) {
         Product product = getProductForOthersClasses(productId);
         User currentUser = userService.loadCurrentUser();
-        if (currentUser.getRole() != ADMIN || product.getVendor() != currentUser){
+        if (currentUser.getRole() != ADMIN || product.getVendor() != currentUser) {
             throw new GlobalUnauthorizedActionException("You are not allowed to delete this product");
         }
 
@@ -103,7 +115,7 @@ public class ProductService {
         Product product = productRepo.findById(productId).orElseThrow(() -> new GlobalNotFoundException(" There is no product with id: " + productId)
         );
         User currentUser = userService.loadCurrentUser();
-        if (product.getVendor() != currentUser){
+        if (product.getVendor() != currentUser) {
             throw new GlobalUnauthorizedActionException("You are not allowed to delete this product");
         }
         Product updatedProduct = productRepo.save(updateProduct(productDto, product));
