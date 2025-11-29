@@ -10,6 +10,7 @@ import com.ihab.e_commerce.exception.GlobalNotFoundException;
 import com.ihab.e_commerce.service.product.ProductService;
 import com.ihab.e_commerce.service.user.main.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.hc.core5.http.nio.entity.BasicAsyncEntityConsumer;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
