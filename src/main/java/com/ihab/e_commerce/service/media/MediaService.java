@@ -58,7 +58,7 @@ public class MediaService {
     /*   adding covering image */
     public MediaDto uploadCoverImage(MultipartFile file, Product product) {
         validateImageFile(file);
-        Media media =  product.getMedia().stream().filter(
+        Media media = product.getMedia().stream().filter(
                 Media::isCoverImage
         ).findFirst().orElse(
                 uploadSingleImage(file, product)

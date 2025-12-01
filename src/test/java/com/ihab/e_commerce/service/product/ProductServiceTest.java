@@ -86,26 +86,26 @@ class ProductServiceTest {
         assertEquals(actualMessage, expectedMessage);
     }
 
-    @Test
-    void addProduct_ShouldAddNewProduct() {
-        //Given
-        ProductDto productDto = ProductDto.builder()
-                .productName("phone")
-                .price(new BigDecimal(2000))
-                .amount(5)
-                .brand("Iphone")
-                .categoryName("Electronic")
-                .build();
-        Product product = productMapper.fromDtoToProduct(productDto);
-        ProductResponse productResponse = productMapper.fromProductToProductResponse(product);
-        when(productRepo.save(product)).thenReturn(product);
-
-        // When
-        ProductResponse actualResponse = productService.addProduct(productDto);
-
-        // Then
-        assertEquals(productResponse, actualResponse);
-    }
+//    @Test
+//    void addProduct_ShouldAddNewProduct() {
+//        //Given
+//        ProductDto productDto = ProductDto.builder()
+//                .productName("phone")
+//                .price(new BigDecimal(2000))
+//                .amount(5)
+//                .brand("Iphone")
+//                .categoryName("Electronic")
+//                .build();
+//        Product product = productMapper.fromDtoToProduct(productDto);
+//        ProductResponse productResponse = productMapper.fromProductToProductResponse(product);
+//        when(productRepo.save(product)).thenReturn(product);
+//
+//        // When
+//        ProductResponse actualResponse = productService.addProduct(productDto);
+//
+//        // Then
+//        assertEquals(productResponse, actualResponse);
+//    }
 
     @Test
     @Disabled

@@ -26,6 +26,7 @@ public class ProductController {
         ProductResponse product = productService.getProduct(id);
         return ResponseEntity.ok(new GlobalSuccessResponse(" Product fetched successfully", product));
     }
+
     @GetMapping()
     public ResponseEntity<GlobalSuccessResponse> getAllProduct() {
         List<ProductResponse> products = productService.getAllProduct();
@@ -34,9 +35,11 @@ public class ProductController {
 
     /* here we get all product by vendor id */
     @GetMapping("/vendor/{vendorId}")
-    public ResponseEntity<GlobalSuccessResponse> getAllProduct(
+//    @PreAuthorize("(hasAnyRole('ADMIN', 'VENDOR')) and (hasAnyAuthority('admin:read', 'vendor:read'))")
+    public ResponseEntity<GlobalSuccessResponse> getAllProductWithVendorId(
             @PathVariable Long vendorId
     ) {
+        /* I don't need a user here */
         List<ProductResponse> products = productService.getAllProductByVendorId(vendorId);
         return ResponseEntity.ok(new GlobalSuccessResponse(" Product fetched successfully", products));
     }

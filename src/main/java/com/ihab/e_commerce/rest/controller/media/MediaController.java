@@ -9,6 +9,7 @@ import com.ihab.e_commerce.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,6 +29,7 @@ public class MediaController {
 
     /* upload cover image */
     @PostMapping("/image/{id}/cover")
+    @PreAuthorize("hasRole('VENDOR')")
     public ResponseEntity<GlobalSuccessResponse> uploadProductCover(
             @RequestParam("file") MultipartFile file,
             @PathVariable Long id){
@@ -36,14 +38,17 @@ public class MediaController {
         return ResponseEntity.ok(new GlobalSuccessResponse("Cover Image uploaded successfully", mediaDto));
     }
 
+
+    /* this to get cover image */
     @GetMapping("/image/{id}/cover")
-    public ResponseEntity<GlobalSuccessResponse> uploadProductCover(@PathVariable Long id){
+    public ResponseEntity<GlobalSuccessResponse> getProductCoverImage(@PathVariable Long id){
         Product product = productService.getProductForOthersClasses(id);
         MediaDto mediaDto = mediaService.getCoverImage(product);
         return ResponseEntity.ok(new GlobalSuccessResponse("Cover Image fetched successfully", mediaDto));
     }
 
     @PostMapping("/{id}/image")
+    @PreAuthorize("hasRole('VENDOR')")
     public ResponseEntity<GlobalSuccessResponse> uploadProductImages(
             @RequestParam("files") List<MultipartFile> files,
             @PathVariable Long id){
@@ -53,6 +58,7 @@ public class MediaController {
     }
 
     @PostMapping("/{id}/video")
+    @PreAuthorize("hasRole('VENDOR')")
     public ResponseEntity<GlobalSuccessResponse> uploadProductVideo(
             @RequestParam MultipartFile file,
             @PathVariable Long id){
@@ -62,6 +68,7 @@ public class MediaController {
     }
 
     @DeleteMapping("{mediaId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDOR')")
     public ResponseEntity<GlobalSuccessResponse> deleteFile(
             @PathVariable String mediaId){
         mediaService.deleteFile(mediaId);
