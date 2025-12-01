@@ -44,7 +44,8 @@ public class MediaMapper {
     }
 
     public List<Media> fromDtoToListOfMedia(List<MediaDto> medias) {
-        return medias
+        return medias==null? Collections.emptyList() :
+                medias
                 .stream()
                 .map(this::fromDtoToMedia)
                 .collect(Collectors.toList());
