@@ -28,4 +28,5 @@ public class ProductResponse {
     private List<MediaDto> medias;
     /* here we get the user */
     private UserDto vendor;
+    private Double avgRate;
 }
