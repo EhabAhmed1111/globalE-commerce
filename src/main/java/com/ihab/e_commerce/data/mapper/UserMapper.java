@@ -19,4 +19,13 @@ public class UserMapper {
                 .lastName(user.getLastName())
                 .build();
     }
+
+    public User fromDtoToUser(UserDto userDto) {
+        return User.builder()
+                .id(userDto.getId())
+                .email(userDto.getEmail())
+                .firstName(userDto.getFirstName())
+                .lastName(userDto.getLastName())
+                .build();
+    }
 }

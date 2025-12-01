@@ -39,6 +39,7 @@ public class ProductMapper {
                 .brand(productDto.getBrand())
                 .amount(productDto.getAmount())
                 .media(mediaMapper.fromDtoToListOfMedia(productDto.getMediaDtoList()))
+                .avgRate(productDto.getAvgRate())
                 .build();
     }
 
@@ -51,6 +52,7 @@ public class ProductMapper {
                 .categoryName(category.getName())
                 .amount(product.getAmount())
                 .price(product.getPrice())
+                .avgRate(product.getAvgRate())
                 .mediaDtoList(mediaMapper.fromListOfMediaToListOfDto(product.getMedia()))
                 .build();
     }
@@ -69,6 +71,7 @@ public class ProductMapper {
                 .price(product.getPrice())
                 .medias(mediaMapper.fromListOfMediaToListOfDto(medias))
                 .vendor(userMapper.fromUserToDto(user))
+                .avgRate(product.getAvgRate())
                 .build();
     }
     public Product fromResponseToProduct(ProductResponse productResponse){
@@ -80,6 +83,7 @@ public class ProductMapper {
                 .brand(productResponse.getBrand())
                 .description(productResponse.getDescription())
                 .category(category)
+                .avgRate(productResponse.getAvgRate())
                 .amount(productResponse.getAmount())
                 .price(productResponse.getPrice())
                 .media(mediaMapper.fromDtoToListOfMedia(medias))

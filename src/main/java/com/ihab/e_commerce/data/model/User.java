@@ -56,6 +56,8 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval=true)
     private Set<Order> orders;
 
+//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+//    private Set<Reviews> reviews;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

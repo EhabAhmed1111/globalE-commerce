@@ -53,5 +53,15 @@ public class Product {
     @JoinColumn(name = "user_id", nullable = false)
     private User vendor;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    // to put the oldest on top
+    @OrderBy("createdAt DESC")
+    private List<Reviews> reviews;
+
+    // we calculate this one
+    @Column(name = "avg_rating")
+    private Double avgRate;
+
+
 
 }
