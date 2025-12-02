@@ -118,7 +118,7 @@ CONSTRAINT "order_item_product_fkey" FOREIGN KEY ("product_id") REFERENCES "prod
 --rollback drop table order_item;
 
 -- changeset ihab:alter-product-table-create-review-table
-ALTER TABLE product ADD avg_rating INTEGER;
+ALTER TABLE product ADD avg_rating INTEGER DEFAULT 0.0;
 
 
 CREATE TABLE "review" (
