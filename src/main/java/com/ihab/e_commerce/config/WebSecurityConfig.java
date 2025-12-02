@@ -40,6 +40,8 @@ public class WebSecurityConfig {
                                 .permitAll()
                                 .requestMatchers(GET, "/api/v1/categories/**")
                                 .permitAll()
+                                .requestMatchers(GET, "/api/v1/reviews/**")
+                                .permitAll()
 //                                .requestMatchers(GET,"/api/v1/category/**")
 //                                .permitAll()
 //                                .requestMatchers(POST,"/api/v1/category/**").hasRole(ADMIN.name())

@@ -12,6 +12,7 @@ import com.ihab.e_commerce.data.repo.ProductRepo;
 import com.ihab.e_commerce.exception.GlobalNotFoundException;
 import com.ihab.e_commerce.service.category.CategoryService;
 import com.ihab.e_commerce.service.media.MediaService;
+import com.ihab.e_commerce.service.reviews.ReviewsService;
 import com.ihab.e_commerce.service.user.main.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

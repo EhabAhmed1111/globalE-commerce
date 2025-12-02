@@ -1,8 +1,6 @@
 package com.ihab.e_commerce.data.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -60,8 +58,17 @@ public class Product {
 
     // we calculate this one
     @Column(name = "avg_rating")
-    private Double avgRate;
+    private Double avgRate = 0.0;
 
 
+    public void calcAvgRating() {
+        if (reviews == null || reviews.isEmpty()) {
+            return;
+        }
+        reviews.stream()
+                .mapToInt(Reviews::getRating)
+                .average()
+                .ifPresent(avg -> this.avgRate = avg);
+    }
 
 }
