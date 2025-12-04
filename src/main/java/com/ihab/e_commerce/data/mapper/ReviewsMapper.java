@@ -15,8 +15,6 @@ public class ReviewsMapper {
     public Reviews fromDtoToReview(ReviewsDto reviewsDto) {
         return Reviews.builder()
                 .content(reviewsDto.getContent())
-                .createdAt(reviewsDto.getCreateAt())
-                .id(reviewsDto.getId())
                 .rating(reviewsDto.getRating())
                 .build();
     }
@@ -24,9 +22,7 @@ public class ReviewsMapper {
     public ReviewsDto fromReviewToDto(Reviews reviews) {
         return ReviewsDto.builder()
                 .content(reviews.getContent())
-                .createAt(reviews.getCreatedAt())
                 .rating(reviews.getRating())
-                .id(reviews.getId())
                 .build();
     }
 

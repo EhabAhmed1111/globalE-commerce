@@ -9,7 +9,6 @@ import com.ihab.e_commerce.data.repo.ProductRepo;
 import com.ihab.e_commerce.data.repo.ReviewsRepo;
 import com.ihab.e_commerce.exception.GlobalNotFoundException;
 import com.ihab.e_commerce.exception.GlobalUnauthorizedActionException;
-import com.ihab.e_commerce.rest.request.ReviewRequest;
 import com.ihab.e_commerce.rest.response.ReviewsResponse;
 import com.ihab.e_commerce.service.product.ProductService;
 import com.ihab.e_commerce.service.user.main.UserService;
@@ -79,10 +78,10 @@ public class ReviewsService {
         return product.getReviews().stream().map(reviewsMapper::fromReviewToReviewResponse).collect(Collectors.toList());
     }
 
-    public ReviewsResponse updateReview(Long productId, Long reviewsId, ReviewRequest request) {
+    public ReviewsResponse updateReview(Long productId, Long reviewsId, ReviewsDto request) {
         User currentUser = userService.loadCurrentUser();
         Product product = productService.getProductForOthersClasses(productId);
-        Reviews reviews = updatingReview(product, reviewsId, request.getComment(), request.getRating());
+        Reviews reviews = updatingReview(product, reviewsId, request.getContent(), request.getRating());
         if (currentUser != reviews.getUser() || currentUser.getRole() != ADMIN) {
             throw new GlobalUnauthorizedActionException("this user can't delete this comment");
         }

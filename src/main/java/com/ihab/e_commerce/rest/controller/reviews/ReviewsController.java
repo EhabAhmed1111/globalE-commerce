@@ -2,13 +2,14 @@ package com.ihab.e_commerce.rest.controller.reviews;
 
 
 import com.ihab.e_commerce.data.dto.ReviewsDto;
-import com.ihab.e_commerce.rest.request.ReviewRequest;
 import com.ihab.e_commerce.rest.response.GlobalSuccessResponse;
 import com.ihab.e_commerce.rest.response.ReviewsResponse;
 import com.ihab.e_commerce.service.reviews.ReviewsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -53,7 +54,7 @@ public class ReviewsController {
     @PostMapping("/product/{productId}")
     public ResponseEntity<GlobalSuccessResponse> addReview(
             @RequestBody ReviewsDto reviewsDto,
-            @RequestParam Long productId
+            @PathVariable Long productId
     ) {
         ReviewsResponse reviewsResponse = reviewsService.addReview(reviewsDto, productId);
         return ResponseEntity.ok(
@@ -65,9 +66,9 @@ public class ReviewsController {
     }
 
     @PutMapping("/product/{productId}")
-    public ResponseEntity<GlobalSuccessResponse> addReview(
-            @RequestBody ReviewRequest request,
-            @RequestParam Long productId,
+    public ResponseEntity<GlobalSuccessResponse> updateReview(
+            @RequestBody ReviewsDto request,
+            @PathVariable Long productId,
             @RequestParam Long reviewId
     ) {
         ReviewsResponse reviewsResponse = reviewsService.updateReview(productId, reviewId, request);

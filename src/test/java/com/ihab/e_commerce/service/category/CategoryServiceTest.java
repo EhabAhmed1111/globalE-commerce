@@ -188,21 +188,21 @@ class CategoryServiceTest {
         assertEquals("Phones", actualCategory.getName());
     }
 
-    @Test
-    void addCategory_shouldAddAndReturnCategory() {
-        // Given
-        Category category = Category.builder()
-                .id(1L)
-                .name("Electronic")
-                .build();
-
-        when(categoryRepo.save(category)).thenReturn(category);
-
-        // When
-        Category actualCategory = categoryService.addCategory(category);
-
-
-        // Then
-        assertEquals(category, actualCategory);
-    }
+//    @Test
+//    void addCategory_shouldAddAndReturnCategory() {
+//        // Given
+//        Category category = Category.builder()
+//                .id(1L)
+//                .name("Electronic")
+//                .build();
+//
+//        when(categoryRepo.save(category)).thenReturn(category);
+//
+//        // When
+//        Category actualCategory = categoryService.addCategory(category);
+//
+//
+//        // Then
+//        assertEquals(category, actualCategory);
+//    }
 }

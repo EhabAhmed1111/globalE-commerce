@@ -43,6 +43,12 @@ there will be relation with
     @Column(nullable = false, name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column( name = "image_url")
+    private String imageUrl;
+
+    @Column(name = "cloudinary_public_id", unique = true)
+    private String cloudinaryPublicId; // Important for deletion
+
     @JsonIgnore
     @OneToMany(cascade = {
             CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH
