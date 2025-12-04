@@ -4,11 +4,12 @@ package com.ihab.e_commerce.rest.controller.category;
 import com.ihab.e_commerce.rest.response.GlobalSuccessResponse;
 import com.ihab.e_commerce.data.model.Category;
 import com.ihab.e_commerce.service.category.CategoryService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -52,10 +53,26 @@ public class CategoryController {
     //ADMIN roles
 
     @PostMapping()
-    public ResponseEntity<GlobalSuccessResponse> addCategory(@RequestBody Category category) {
+    @PreAuthorize("hasRole('ADMIN') and hasAuthority('admin:create')")
+    public ResponseEntity<GlobalSuccessResponse> addCategory(
+            @RequestBody Category category
+    ) {
         Category addedCategory = categoryService.addCategory(category);
         return ResponseEntity.ok(new GlobalSuccessResponse(
                 "adding successfully",
+                category
+        ));
+    }
+
+    @PostMapping("/image/{categoryId}")
+    @PreAuthorize("hasRole('ADMIN') and hasAuthority('admin:create')")
+    public ResponseEntity<GlobalSuccessResponse> addImageToCategory(
+            @PathVariable Long categoryId,
+            @RequestParam("file") MultipartFile file
+    ) {
+        Category category = categoryService.addImageToCategory(file, categoryId);
+        return ResponseEntity.ok(new GlobalSuccessResponse(
+                "adding image done successfully",
                 category
         ));
     }

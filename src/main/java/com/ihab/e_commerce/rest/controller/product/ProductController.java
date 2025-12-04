@@ -21,6 +21,7 @@ public class ProductController {
 //todo get all product
 //todo get all product with category
 
+
     @GetMapping("/{id}")
     public ResponseEntity<GlobalSuccessResponse> getProductWithId(@PathVariable Long id) {
         ProductResponse product = productService.getProduct(id);

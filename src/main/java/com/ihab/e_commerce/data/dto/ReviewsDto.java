@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class ReviewsDto {
-    private Long id;
+
+
     private Integer rating;
     private String content;
-    private LocalDateTime createAt;
 }
