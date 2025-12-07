@@ -38,8 +38,6 @@ public class ProductMapper {
                 .category(category)
                 .brand(productDto.getBrand())
                 .amount(productDto.getAmount())
-                .media(mediaMapper.fromDtoToListOfMedia(productDto.getMediaDtoList()))
-                .avgRate(productDto.getAvgRate())
                 .build();
     }
 
@@ -52,8 +50,6 @@ public class ProductMapper {
                 .categoryName(category.getName())
                 .amount(product.getAmount())
                 .price(product.getPrice())
-                .avgRate(product.getAvgRate())
-                .mediaDtoList(mediaMapper.fromListOfMediaToListOfDto(product.getMedia()))
                 .build();
     }
     public ProductResponse fromProductToProductResponse(Product product){

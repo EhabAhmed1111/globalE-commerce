@@ -11,8 +11,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class ReviewsDto {
-
-
     private Integer rating;
     private String content;
 }

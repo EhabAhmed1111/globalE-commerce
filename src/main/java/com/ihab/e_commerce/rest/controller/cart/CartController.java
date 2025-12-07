@@ -2,6 +2,7 @@ package com.ihab.e_commerce.rest.controller.cart;
 
 
 import com.ihab.e_commerce.data.model.Cart;
+import com.ihab.e_commerce.rest.response.CartResponse;
 import com.ihab.e_commerce.rest.response.GlobalSuccessResponse;
 import com.ihab.e_commerce.service.cart.CartService;
 import lombok.RequiredArgsConstructor;
@@ -10,9 +11,16 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(name = "${api.prefix}/carts")
+@RequestMapping("${api.prefix}/carts")
 public class CartController {
     private final CartService cartService;
+
+    @GetMapping()
+    public ResponseEntity<GlobalSuccessResponse> getCurrentCart() {
+        CartResponse cartResponse = cartService.getCurrentCart();
+        return ResponseEntity.ok(new GlobalSuccessResponse("Fetch cart successfully", cartResponse));
+
+    }
 
     @PostMapping("/users/{userId}/cart/initialize")
     public ResponseEntity<GlobalSuccessResponse> initializeCart(@PathVariable Long userId) {
@@ -26,9 +34,9 @@ public class CartController {
                                                                      @RequestParam int quantity) {
 // Here should be condition id cartId null to create another cart
         // but should this be here or in service
-        Cart cart = cartService.addingProductToCart(productId, cartId, quantity);
+        CartResponse cartResponse = cartService.addingProductToCart(productId, cartId, quantity);
 
-        return ResponseEntity.ok(new GlobalSuccessResponse("Item added successfully", cart));
+        return ResponseEntity.ok(new GlobalSuccessResponse("Item added successfully", cartResponse));
 
     }
 

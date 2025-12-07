@@ -18,8 +18,8 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/{userId}")
-    public ResponseEntity<GlobalSuccessResponse> createOrder(@PathVariable Long userId){
-        Order order = orderService.makeOrder(userId);
+    public ResponseEntity<GlobalSuccessResponse> createOrder(){
+        Order order = orderService.makeOrder();
         return ResponseEntity.ok(new GlobalSuccessResponse("Order made successfully", order));
     }
 
