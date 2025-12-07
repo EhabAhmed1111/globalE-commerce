@@ -31,8 +31,8 @@ public class OrderService {
     private final OrderItemRepo orderItemRepo;
 
     // Creation OP
-    public Order makeOrder(Long userId) {
-        Cart cart = cartService.getCartByUserId(userId);
+    public Order makeOrder() {
+        Cart cart = cartService.getCartByUserId();
         Order order = makeOrder(cart);
         cart.setIsActive(false);
         return order;

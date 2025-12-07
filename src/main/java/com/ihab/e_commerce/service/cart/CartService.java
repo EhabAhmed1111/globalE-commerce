@@ -1,5 +1,6 @@
 package com.ihab.e_commerce.service.cart;
 
+import com.ihab.e_commerce.data.mapper.CartMapper;
 import com.ihab.e_commerce.data.model.Cart;
 import com.ihab.e_commerce.data.model.CartItem;
 import com.ihab.e_commerce.data.model.Product;
@@ -7,6 +8,7 @@ import com.ihab.e_commerce.data.model.User;
 import com.ihab.e_commerce.data.repo.CartItemRepo;
 import com.ihab.e_commerce.data.repo.CartRepo;
 import com.ihab.e_commerce.exception.GlobalNotFoundException;
+import com.ihab.e_commerce.rest.response.CartResponse;
 import com.ihab.e_commerce.service.product.ProductService;
 import com.ihab.e_commerce.service.user.main.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +26,13 @@ public class CartService {
     private final UserService userService;
     private final CartItemRepo cartItemRepo;
     private final ProductService productService;
+    private final CartMapper cartMapper;
 
 
 // Creating OP
     public Cart initializeCart(Long userId) {
         User user = userService.getUserById(userId);
-        return Optional.ofNullable(getCartByUserId(userId)).orElseGet(
+        return Optional.ofNullable(getCartByUserId()).orElseGet(
                 () -> {
                     Cart cart = new Cart();
                     cart.setUser(user);
@@ -39,7 +42,7 @@ public class CartService {
     }
 
     // Adding OP
-    public Cart addingProductToCart(Long productId, Long cartId, int quantity) {
+    public CartResponse addingProductToCart(Long productId, Long cartId, int quantity) {
 
         Cart cart = getCartById(cartId);
         Product product = productService.getProductForOthersClasses(productId);
@@ -71,7 +74,9 @@ public class CartService {
 
 //       cartItem.setTotalPrice(cartItem.getUnitePrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
         cart.updateTotalPrice();
-        return cartRepo.save(cart);
+        Cart savedCart =  cartRepo.save(cart);
+
+        return cartMapper.fromCartToResponse(savedCart);
     }
 
     // Updating OP
@@ -100,8 +105,13 @@ public class CartService {
 
 
     // Reading OP
-    public Cart getCartByUserId(Long userId) {
-        return cartRepo.findByUserId(userId);
+    // this for endpoint
+    public CartResponse getCurrentCart() {
+        return cartMapper.fromCartToResponse(getCartByUserId());
+    }
+    public Cart getCartByUserId() {
+        User user = userService.loadCurrentUser();
+        return cartRepo.findByUserId(user.getId());
     }
 
     public List<Cart> getAllCartByUserId(Long userId) {
@@ -109,6 +119,12 @@ public class CartService {
     }
 
     public Cart getCartById(Long cartId) {
+
+        if (cartId == null) {
+            Cart cart = new Cart();
+            cart.setUser(userService.loadCurrentUser());
+            return cartRepo.save(cart);
+        }
         return cartRepo.findById(cartId).orElseGet(
                 () -> {
                     // If cart not exist
