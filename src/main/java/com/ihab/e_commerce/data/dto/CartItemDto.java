@@ -3,6 +3,7 @@ package com.ihab.e_commerce.data.dto;
 
 import com.ihab.e_commerce.data.model.Cart;
 import com.ihab.e_commerce.data.model.Product;
+import com.ihab.e_commerce.rest.response.ProductResponse;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +27,7 @@ public class CartItemDto {
     private LocalDateTime updatedAt;
     private LocalDateTime createdAt;
     private Integer quantity;
-    private ProductDto productDto;
+    private ProductResponse productResponse;
 
 
 }

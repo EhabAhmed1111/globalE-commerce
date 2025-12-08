@@ -19,7 +19,6 @@ public class CartController {
     public ResponseEntity<GlobalSuccessResponse> getCurrentCart() {
         CartResponse cartResponse = cartService.getCurrentCart();
         return ResponseEntity.ok(new GlobalSuccessResponse("Fetch cart successfully", cartResponse));
-
     }
 
     @PostMapping("/users/{userId}/cart/initialize")
@@ -30,22 +29,21 @@ public class CartController {
 
     @PostMapping("/products/{productId}/adding-to-cart")
     public ResponseEntity<GlobalSuccessResponse> addingProductToCart(@PathVariable Long productId,
-                                                                     @RequestParam(required = false) Long cartId,
                                                                      @RequestParam int quantity) {
 // Here should be condition id cartId null to create another cart
         // but should this be here or in service
-        CartResponse cartResponse = cartService.addingProductToCart(productId, cartId, quantity);
+        CartResponse cartResponse = cartService.addingProductToCart(productId, quantity);
 
         return ResponseEntity.ok(new GlobalSuccessResponse("Item added successfully", cartResponse));
 
     }
 
-    @PutMapping("/{cartId}/products/{productId}")
-    public ResponseEntity<GlobalSuccessResponse> updateQuantityOfItem(@PathVariable Long cartId,
+    @PutMapping("/products/{productId}")
+    public ResponseEntity<GlobalSuccessResponse> updateQuantityOfItem(
                                                                       @PathVariable Long productId,
                                                                       @RequestParam int quantity){
-        Cart cart = cartService.updatingCartItem(cartId, productId, quantity);
-        return ResponseEntity.ok(new GlobalSuccessResponse("Cart updated successfully", cart));
+        CartResponse cartResponse = cartService.updatingCartItem(productId, quantity);
+        return ResponseEntity.ok(new GlobalSuccessResponse("Cart updated successfully", cartResponse));
 
     }
 
@@ -55,10 +53,10 @@ public class CartController {
         return ResponseEntity.ok(new GlobalSuccessResponse("Cart cleared successfully", null));
     }
 
-    @DeleteMapping("/{cartId}/cartItems/{cartItemId}")
-    public ResponseEntity<GlobalSuccessResponse> removeCartItemFromCart(@PathVariable Long cartId, @PathVariable Long cartItemId){
-        cartService.deleteCartItemFromCart(cartId, cartItemId);
-        return ResponseEntity.ok(new GlobalSuccessResponse("CartItem deleted successfully", null));
+    @DeleteMapping("/cart-items/{cartItemId}")
+    public ResponseEntity<GlobalSuccessResponse> removeCartItemFromCart(@PathVariable Long cartItemId){
+       CartResponse cartResponse =  cartService.deleteCartItemFromCart( cartItemId);
+        return ResponseEntity.ok(new GlobalSuccessResponse("CartItem deleted successfully", cartResponse));
     }
 
 }
