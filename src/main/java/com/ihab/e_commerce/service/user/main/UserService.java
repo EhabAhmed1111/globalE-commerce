@@ -1,9 +1,14 @@
 package com.ihab.e_commerce.service.user.main;
 
+import com.ihab.e_commerce.data.mapper.ProductMapper;
+import com.ihab.e_commerce.data.model.Product;
 import com.ihab.e_commerce.data.model.User;
 import com.ihab.e_commerce.data.repo.UserRepository;
 import com.ihab.e_commerce.exception.GlobalNotFoundException;
+import com.ihab.e_commerce.rest.response.ProductResponse;
+import com.ihab.e_commerce.rest.response.WishlistResponse;
 import com.ihab.e_commerce.service.jwt.JwtService;
+import com.ihab.e_commerce.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,6 +16,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +28,7 @@ public class UserService {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
+
     // TODO(create UserDto)
     // todo return the product with user
 
@@ -82,6 +91,8 @@ public class UserService {
         User user = loadCurrentUser();
         return changePassword(user.getId(), oldPassword, newPassword);
     }
+
+
 
     // todo(for admin we can get allUser or update userRole)
 }

@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -60,6 +61,8 @@ public class Product {
     @Column(name = "avg_rating")
     private Double avgRate = 0.0;
 
+    @ManyToMany(mappedBy = "wishList")
+    private Set<User> users;
 
     public void calcAvgRating() {
         if (reviews == null || reviews.isEmpty()) {
