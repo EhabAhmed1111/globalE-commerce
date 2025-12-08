@@ -42,9 +42,9 @@ public class CartService {
     }
 
     // Adding OP
-    public CartResponse addingProductToCart(Long productId, Long cartId, int quantity) {
+    public CartResponse addingProductToCart(Long productId, int quantity) {
 
-        Cart cart = getCartById(cartId);
+        Cart cart = getCartByUserId();
         Product product = productService.getProductForOthersClasses(productId);
 
         cart.getCartItems()
@@ -80,9 +80,9 @@ public class CartService {
     }
 
     // Updating OP
-    public Cart updatingCartItem(Long cartId, Long productId, int quantity) {
+    public CartResponse updatingCartItem(Long productId, int quantity) {
         Product product = productService.getProductForOthersClasses(productId);
-        Cart cart = getCartById(cartId);
+        Cart cart = getCartByUserId();
         cart.getCartItems().stream()
                 .filter(item -> item.getProduct().equals(product))
                 .findFirst()
@@ -100,7 +100,7 @@ public class CartService {
                         }
                 );
         cart.updateTotalPrice();
-        return cartRepo.save(cart);
+        return cartMapper.fromCartToResponse(cartRepo.save(cart));
     }
 
 
@@ -109,9 +109,16 @@ public class CartService {
     public CartResponse getCurrentCart() {
         return cartMapper.fromCartToResponse(getCartByUserId());
     }
+
     public Cart getCartByUserId() {
         User user = userService.loadCurrentUser();
-        return cartRepo.findByUserId(user.getId());
+        return cartRepo.findByUserId(user.getId()).orElseGet(
+                () -> {
+                    Cart cart = new Cart();
+                    cart.setUser(user);
+                    return cartRepo.save(cart);
+                }
+        );
     }
 
     public List<Cart> getAllCartByUserId(Long userId) {
@@ -152,12 +159,12 @@ public class CartService {
         cartRepo.delete(cart);
     }
 
-    public void deleteCartItemFromCart(Long cartId, Long cartItemId) {
-        Cart cart = getCartById(cartId);
-        CartItem cartItem = getCartItemFromCart(cartId, cartItemId);
+    public CartResponse deleteCartItemFromCart(Long cartItemId) {
+        Cart cart = getCartByUserId();
+        CartItem cartItem = getCartItemFromCart(cart.getId(), cartItemId);
         cart.removeItem(cartItem);
 
         // This will delete cart item by cascading future
-        cartRepo.save(cart);
+       return cartMapper.fromCartToResponse(cartRepo.save(cart));
     }
 }
