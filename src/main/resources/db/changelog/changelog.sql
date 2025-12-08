@@ -138,4 +138,15 @@ CONSTRAINT "review_product_fkey" FOREIGN KEY ("product_id") REFERENCES "product"
 --rollback alter table review drop column avg_rating;
 --rollback drop table review;
 
+-- changeset ihab:create-wishlist-table
+CREATE TABLE "wishlist" (
+"user_id" BIGINT NOT NULL,
+"product_id" BIGINT NOT NULL,
+CONSTRAINT "wishlist_pkey" PRIMARY KEY ("product_id", "user_id"),
+CONSTRAINT "wishlist_user_fkey" FOREIGN KEY ("user_id") REFERENCES "_user"("id") ON DELETE CASCADE ON UPDATE NO ACTION,
+CONSTRAINT "wishlist_product_fkey" FOREIGN KEY ("product_id") REFERENCES "product"("id") ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+--rollback drop table wishlist;
+
 

@@ -56,6 +56,16 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval=true)
     private Set<Order> orders;
 
+
+    @ManyToMany()
+    @JoinTable(
+            name = "wishlist",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    // we make it set to prevent duplicate
+    private Set<Product> wishList;
+
 //    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 //    private Set<Reviews> reviews;
 
@@ -95,6 +105,14 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
+    }
+
+    public void addToWishlist(Product product) {
+        this.wishList.add(product);
+    }
+
+    public void removeFromWishlist(Product product) {
+        this.wishList.remove(product);
     }
 }
 
