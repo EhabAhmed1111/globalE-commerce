@@ -31,16 +31,16 @@ spring:
       max-request-size: 100MB
 
 cloudinary:
-  cloud_name: dpc0ohu0g
-  api_key: 399568424786841
-  api_secret: jaLvAsGQArQWNBpxuPLEuHd9-ZA
+  cloud_name: ${CLOUDINARY_CLOUD_NAME}
+  api_key: ${CLOUDINARY_API_KEY}
+  api_secret: ${CLOUDINARY_API_SECRET}
 
 JWT:
-  secret_key: "c1a7a6461e65ce4e8a362126e3d3b80e16bc400dea0a48a801537347fc071327"
+  secret_key: ${JWT_SECRET_KEY}
 api:
   prefix: "/api/v1"
 tap:
-  secret_key: "sk_test_XKokBfNWv6FIYuTMg5sLPjhJ"
+  secret_key: ${TAP_SECRET_KEY}
 
 
 

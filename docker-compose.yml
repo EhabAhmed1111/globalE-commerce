@@ -8,6 +8,8 @@ services:
     ports:
       - target: 8080
         published: 8080
+    env_file:
+      - .env
     networks:
       - backend-network
 
