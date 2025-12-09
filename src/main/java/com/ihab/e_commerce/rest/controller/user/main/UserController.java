@@ -57,6 +57,11 @@ public class UserController {
         return ResponseEntity.ok(new GlobalSuccessResponse("product removed from wishlist successfully", wishlistResponse));
     }
 
+    @GetMapping("/wishlist/favorite")
+    public ResponseEntity<GlobalSuccessResponse> checkIfProductIsFavorite(@RequestParam Long productId) {
+        Boolean isFavorite = wishlistService.checkIfProductIsFavorite(productId);
+        return ResponseEntity.ok(new GlobalSuccessResponse("Check done", isFavorite));
+    }
     // todo create more user functionality
 
 }

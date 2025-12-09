@@ -1,27 +1,28 @@
 package com.ihab.e_commerce.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.reactive.function.client.WebClient;
+
 
 @Configuration
 public class WebConfig {
-
-//    @Bean
-//    public WebMvcConfigurer webMvcConfigurer() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("api/**")
-//                        .allowedOrigins("https://localhost:4200")
-//                        .allowedMethods("GET", "POST", "PUT", "DELETE");
-//            }
-//        };
-//    }
+    @Value("${tap.secret_key}")
+    private String secretKey;
+@Bean
+public WebClient tapWepClient() {
+    return WebClient.builder()
+            .baseUrl("https://api.tap.company/v2")
+            .defaultHeader(HttpHeaders.AUTHORIZATION,"Bearer " + secretKey)
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .build();
+}
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource () {
