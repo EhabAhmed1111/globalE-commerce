@@ -39,7 +39,8 @@ JWT:
   secret_key: "c1a7a6461e65ce4e8a362126e3d3b80e16bc400dea0a48a801537347fc071327"
 api:
   prefix: "/api/v1"
-
+tap:
+  secret_key: "sk_test_XKokBfNWv6FIYuTMg5sLPjhJ"
 
 
 

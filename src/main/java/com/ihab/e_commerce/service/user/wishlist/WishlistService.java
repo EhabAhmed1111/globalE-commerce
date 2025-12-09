@@ -11,6 +11,8 @@ import com.ihab.e_commerce.service.user.main.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -65,5 +67,13 @@ public class WishlistService {
                 .count(user.getWishList().size())
                 .productResponseSet(productResponse)
                 .build();
+    }
+
+    public Boolean checkIfProductIsFavorite(Long productId) {
+        User user = userService.loadCurrentUser();
+
+        return user.getWishList().stream().anyMatch(
+                product -> Objects.equals(product.getId(), productId)
+        );
     }
 }
