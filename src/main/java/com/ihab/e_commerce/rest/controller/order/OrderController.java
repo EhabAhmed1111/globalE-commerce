@@ -25,7 +25,7 @@ public class OrderController {
 
     @PostMapping("/{userId}/re-order")
     public ResponseEntity<GlobalSuccessResponse> reOrderLastOrder(@PathVariable Long userId){
-        Order order = orderService.reOrderLastOrder(userId);
+        Order order = orderService.reOrderLastOrder();
         return ResponseEntity.ok(new GlobalSuccessResponse("Order reMade successfully", order));
     }
 

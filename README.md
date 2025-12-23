@@ -133,6 +133,38 @@ src/
 
 [//]: # (here we will add all end point)
 
+sequenceDiagram
+autonumber
+
+    actor Customer
+    participant FE as Frontend (Web / Mobile)
+    participant BE as Backend API (Spring Boot)
+    participant PG as Payment Gateway
+    participant Bank as Issuing Bank
+
+    Customer ->> FE: Select product & checkout
+    FE ->> BE: POST /payments (orderId, amount)
+    BE ->> PG: Create PaymentIntent
+    PG -->> BE: intent_id + client_secret
+
+    FE ->> PG: Confirm payment (SDK)
+    PG ->> Bank: Authorize payment
+    Bank -->> PG: Auth result (approve / decline / 3DS)
+
+    alt 3D Secure required
+        PG -->> FE: Redirect / challenge
+        FE -->> PG: 3DS completed
+    end
+
+    PG -->> PG: Process payment
+
+    PG -->> BE: Webhook (payment.succeeded / failed)
+    BE ->> BE: Verify signature
+    BE ->> BE: Update payment & order status
+
+    FE ->> BE: GET /payments/{id}
+    BE -->> FE: Final payment status
+    FE -->> Customer: Show success / failure
 
 
     

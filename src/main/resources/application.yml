@@ -41,7 +41,24 @@ api:
   prefix: "/api/v1"
 tap:
   secret_key: ${TAP_SECRET_KEY}
+  base_url: https://api.tap.company/v2
 
+stripe:
+  secret:
+    key: ${STRIPE_SECRET_KEY}
+  public:
+      key: ${STRIPE_PUBLIC_KEY}
+  webhook:
+    key: ${STRIPE_WEBHOOK_KEY}
+#  base_url: https://api.tap.company/v2
+
+payment:
+  redirect:
+    url: http://localhost:4200/payment/result
+  webhook:
+    url: http://localhost:8080/api/v1/payment/webhook
+  default:
+    currency: USD
 
 
 #for test
