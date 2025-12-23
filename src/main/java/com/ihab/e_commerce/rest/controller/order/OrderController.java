@@ -3,6 +3,7 @@ package com.ihab.e_commerce.rest.controller.order;
 
 import com.ihab.e_commerce.data.model.Order;
 import com.ihab.e_commerce.rest.response.GlobalSuccessResponse;
+import com.ihab.e_commerce.rest.response.OrderResponse;
 import com.ihab.e_commerce.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +18,9 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @PostMapping("/{userId}")
+    @PostMapping()
     public ResponseEntity<GlobalSuccessResponse> createOrder(){
-        Order order = orderService.makeOrder();
+        OrderResponse order = orderService.makeOrder();
         return ResponseEntity.ok(new GlobalSuccessResponse("Order made successfully", order));
     }
 
