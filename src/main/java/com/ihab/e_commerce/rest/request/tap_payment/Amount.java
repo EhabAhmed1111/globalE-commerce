@@ -1,4 +1,4 @@
-package com.ihab.e_commerce.rest.request.payment;
+package com.ihab.e_commerce.rest.request.tap_payment;
 
 import java.math.BigDecimal;
 

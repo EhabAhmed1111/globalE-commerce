@@ -94,5 +94,6 @@ public class UserService {
 
 
 
-    // todo(for admin we can get allUser or update userRole)
+    // todo make method to get all vendors only and we will use it to show the bestSellers
+    // todo(for admin we can update userRole)
 }

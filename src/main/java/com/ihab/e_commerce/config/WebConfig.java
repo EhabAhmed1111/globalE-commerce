@@ -5,27 +5,55 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.reactive.function.client.WebClient;
 
 
+
 @Configuration
 public class WebConfig {
-    @Value("${tap.secret_key}")
-    private String secretKey;
-@Bean
-public WebClient tapWepClient() {
-    return WebClient.builder()
-            .baseUrl("https://api.tap.company/v2")
-            .defaultHeader(HttpHeaders.AUTHORIZATION,"Bearer " + secretKey)
-            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .build();
-}
+
+//    @Value("${tap.secret_key}")
+//    private String secretKey;
+
+//    @Bean
+//    public RestTemplate restTemplate() {
+//        RestTemplate restTemplate = new RestTemplate();
+//
+//        // Add headers
+//        restTemplate.getInterceptors().add((request, body, execution) -> {
+//            request.getHeaders().add("Authorization", "Bearer " + secretKey);
+//            request.getHeaders().add("Content-Type", "application/json");
+//            return execution.execute(request, body);
+//        });
+//
+//        return restTemplate;
+//    }
+
+    // this for reactive programing
+//    @Bean
+//    public WebClient tapWepClient() {
+//        return WebClient.builder()
+//                .baseUrl("https://api.tap.company/v2")
+//                .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + secretKey)
+//                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+//                .build();
+//    }
+//
+//    @Bean
+//    public WebClient stripeWebClient() {
+//        return WebClient.builder()
+//                .baseUrl("https://api.tap.company/v2")
+//                .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + secretKey)
+//                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+//                .build();
+//    }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource () {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         // this to allow all header that common from that req
         config.addAllowedHeader("*");

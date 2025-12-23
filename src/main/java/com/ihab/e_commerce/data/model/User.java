@@ -23,8 +23,18 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "_user")
 public class User implements UserDetails {
-/* todo make a relation between product and user
-*   this relation will define whose user own which product */
+
+    /* todo make new field
+        to identify the amount of money that each vendor made(monthly)
+         (profits: BigDecimal)
+         * how to calculate
+         * each time any order made we go to product
+         * then we will load the vendor from this product
+         * then by getting vendor we will get the profits
+         * then we use method to add the new profit with the previous one
+         * it will be something like this
+         * vendor.setProfits(vendor.getProfits + the new profits) */
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -65,6 +75,9 @@ public class User implements UserDetails {
     )
     // we make it set to prevent duplicate
     private Set<Product> wishList;
+
+    @OneToMany(mappedBy = "user")
+    private Set<Payment> paymentSet;
 
 //    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 //    private Set<Reviews> reviews;
