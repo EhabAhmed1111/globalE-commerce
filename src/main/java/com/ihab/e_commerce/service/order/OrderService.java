@@ -1,18 +1,16 @@
 package com.ihab.e_commerce.service.order;
 
 
-import com.ihab.e_commerce.data.enums.OrderStatues;
-import com.ihab.e_commerce.data.model.Cart;
-import com.ihab.e_commerce.data.model.CartItem;
-import com.ihab.e_commerce.data.model.Order;
-import com.ihab.e_commerce.data.model.OrderItem;
+import com.ihab.e_commerce.data.enums.OrderStatus;
+import com.ihab.e_commerce.data.model.*;
+import com.ihab.e_commerce.data.repo.CartRepo;
 import com.ihab.e_commerce.data.repo.OrderItemRepo;
 import com.ihab.e_commerce.data.repo.OrderRepo;
+import com.ihab.e_commerce.data.repo.ProductRepo;
 import com.ihab.e_commerce.exception.GlobalNotFoundException;
 import com.ihab.e_commerce.service.cart.CartService;
 import com.ihab.e_commerce.service.user.main.UserService;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,18 +27,22 @@ public class OrderService {
     private final OrderRepo orderRepo;
     private final CartService cartService;
     private final OrderItemRepo orderItemRepo;
+    private final UserService userService;
+    private final CartRepo cartRepo;
 
     // Creation OP
     public Order makeOrder() {
         Cart cart = cartService.getCartByUserId();
         Order order = makeOrder(cart);
         cart.setIsActive(false);
+        cartRepo.save(cart);
         return order;
     }
 
     // ReOrder OP
-    public Order reOrderLastOrder(Long userId) {
-        List<Cart> carts = cartService.getAllCartByUserId(userId);
+    public Order reOrderLastOrder() {
+        User user = userService.loadCurrentUser();
+        List<Cart> carts = cartService.getAllCartByUserId(user.getId());
         Cart cart = carts.stream().filter(
                 expectedCart -> expectedCart.getIsActive() == false
         ).findFirst().orElseThrow(
@@ -58,11 +60,21 @@ public class OrderService {
                         item -> makeOrderItemFromCartItem(order, item)
                 ).collect(Collectors.toSet())
         );
-        order.setOrderStatues(OrderStatues.PENDING);
+        order.setOrderStatus(OrderStatus.PENDING);
         order.setUser(cart.getUser());
         order.setTotalPrice(cart.getTotalPrice());
-        orderRepo.save(order);
 
+        // todo here I don't know what to do here
+//       var payment =  tapPaymentService.createPaymentIntentWithWebFlux(order.getTotalPrice());
+
+        orderRepo.save(order);
+//        order.getOrderItems().forEach(
+//                item -> {
+//                    Product product = item.getProduct();
+//                    product.setAmount(item.getProduct().getAmount() - item.getQuantity());
+//                    productRepo.save(product);
+//                }
+//        );
         return order;
     }
 
@@ -77,6 +89,10 @@ public class OrderService {
         return orderItemRepo.save(orderItem);
     }
 
+    // todo update orderStatues after inside webhook
+//    public Order updateOrderState(Long orderId) {
+//
+//    }
 
     // Read OP
     public Order getOrder(Long orderId) {

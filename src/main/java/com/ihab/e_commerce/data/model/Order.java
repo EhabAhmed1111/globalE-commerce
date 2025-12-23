@@ -1,7 +1,7 @@
 package com.ihab.e_commerce.data.model;
 
 
-import com.ihab.e_commerce.data.enums.OrderStatues;
+import com.ihab.e_commerce.data.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -37,8 +37,8 @@ public class Order {
     private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "order_statues")
-    private OrderStatues orderStatues;
+    @Column(name = "order_status")
+    private OrderStatus orderStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -46,4 +46,8 @@ public class Order {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<OrderItem> orderItems = new HashSet<>();
+
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+    private Set<Payment> payments;
 }
