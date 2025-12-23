@@ -2,14 +2,21 @@ package com.ihab.e_commerce.service.order;
 
 
 import com.ihab.e_commerce.data.enums.OrderStatus;
+import com.ihab.e_commerce.data.mapper.OrderMapper;
 import com.ihab.e_commerce.data.model.*;
 import com.ihab.e_commerce.data.repo.CartRepo;
 import com.ihab.e_commerce.data.repo.OrderItemRepo;
 import com.ihab.e_commerce.data.repo.OrderRepo;
 import com.ihab.e_commerce.data.repo.ProductRepo;
 import com.ihab.e_commerce.exception.GlobalNotFoundException;
+import com.ihab.e_commerce.rest.request.stripe_payment.StripePaymentRequest;
+import com.ihab.e_commerce.rest.response.OrderResponse;
+import com.ihab.e_commerce.rest.response.ProductResponse;
+import com.ihab.e_commerce.rest.response.stripe_payment.StripePaymentResponse;
 import com.ihab.e_commerce.service.cart.CartService;
+import com.ihab.e_commerce.service.payment.stripe.StripePaymentService;
 import com.ihab.e_commerce.service.user.main.UserService;
+import com.stripe.model.PaymentIntent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,14 +36,19 @@ public class OrderService {
     private final OrderItemRepo orderItemRepo;
     private final UserService userService;
     private final CartRepo cartRepo;
+    private final OrderMapper orderMapper;
+    private final StripePaymentService stripePaymentService;
 
     // Creation OP
-    public Order makeOrder() {
+    public OrderResponse makeOrder() {
         Cart cart = cartService.getCartByUserId();
         Order order = makeOrder(cart);
+        StripePaymentResponse stripePaymentResponse =  createPaymentForOrder(order, "USD");
         cart.setIsActive(false);
         cartRepo.save(cart);
-        return order;
+        OrderResponse orderResponse = orderMapper.fromOrderToOrderResponse(order);
+        orderResponse.setClientSecret(stripePaymentResponse.clientSecret());
+        return orderResponse;
     }
 
     // ReOrder OP
@@ -54,18 +66,17 @@ public class OrderService {
 
     private Order makeOrder( Cart cart){
         Order order = new Order();
-
-        order.setOrderItems(
+        order.setOrderStatus(OrderStatus.PENDING);
+        order.setUser(cart.getUser());
+        orderRepo.save(order);
+        order.addItems(
                 cart.getCartItems().stream().map(
                         item -> makeOrderItemFromCartItem(order, item)
                 ).collect(Collectors.toSet())
         );
-        order.setOrderStatus(OrderStatus.PENDING);
-        order.setUser(cart.getUser());
         order.setTotalPrice(cart.getTotalPrice());
 
         // todo here I don't know what to do here
-//       var payment =  tapPaymentService.createPaymentIntentWithWebFlux(order.getTotalPrice());
 
         orderRepo.save(order);
 //        order.getOrderItems().forEach(
@@ -78,6 +89,26 @@ public class OrderService {
         return order;
     }
 
+    private StripePaymentResponse createPaymentForOrder(Order order, String currency) {
+        if (currency.isEmpty()){
+            currency = "USD";
+        }
+
+        StripePaymentRequest stripePaymentRequest = new StripePaymentRequest(
+                order.getTotalPrice(),
+                currency,
+                "payment created for order" + order.getId()
+        );
+        PaymentIntent paymentIntent = stripePaymentService.createPaymentIntent(stripePaymentRequest);
+
+        return new StripePaymentResponse(
+                paymentIntent.getId(),
+                paymentIntent.getClientSecret(),
+                paymentIntent.getAmount(),
+                paymentIntent.getCurrency(),
+                paymentIntent.getStatus()
+        );
+    }
     private OrderItem makeOrderItemFromCartItem(Order order, CartItem item) {
         OrderItem orderItem = OrderItem.builder()
                 .product(item.getProduct())
