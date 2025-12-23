@@ -41,7 +41,7 @@ api:
   prefix: "/api/v1"
 tap:
   secret_key: ${TAP_SECRET_KEY}
-  base_url: https://api.tap.company/v2
+
 
 stripe:
   secret:
