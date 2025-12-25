@@ -1,8 +1,8 @@
 package com.ihab.e_commerce.rest.controller.product;
 
+import com.ihab.e_commerce.rest.request.ProductRequest;
 import com.ihab.e_commerce.rest.response.GlobalSuccessResponse;
 import com.ihab.e_commerce.rest.response.ProductResponse;
-import com.ihab.e_commerce.data.dto.ProductDto;
 import com.ihab.e_commerce.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,8 +48,8 @@ public class ProductController {
     @PostMapping
     // no need for admin to create product
     @PreAuthorize("(hasRole('VENDOR')) and (hasAuthority('vendor:create'))")
-    public ResponseEntity<GlobalSuccessResponse> addProduct(@RequestBody ProductDto productDto) {
-        ProductResponse product = productService.addProduct(productDto);
+    public ResponseEntity<GlobalSuccessResponse> addProduct(@RequestBody ProductRequest productRequest) {
+        ProductResponse product = productService.addProduct(productRequest);
         return ResponseEntity.ok(new GlobalSuccessResponse(" Product fetched successfully", product));
     }
 
@@ -62,8 +62,8 @@ public class ProductController {
 
     @PutMapping("/{id}")
     @PreAuthorize("(hasRole('VENDOR')) and (hasAuthority('vendor:update'))")
-    public ResponseEntity<GlobalSuccessResponse> updateProduct(@RequestBody ProductDto productDto, @PathVariable Long id) {
-        ProductResponse product = productService.updateProduct(productDto, id);
+    public ResponseEntity<GlobalSuccessResponse> updateProduct(@RequestBody ProductRequest productRequest, @PathVariable Long id) {
+        ProductResponse product = productService.updateProduct(productRequest, id);
         return ResponseEntity.ok(new GlobalSuccessResponse(" Product fetched successfully", product));
     }
 }

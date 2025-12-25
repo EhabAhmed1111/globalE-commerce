@@ -1,12 +1,16 @@
 package com.ihab.e_commerce.service.payment.stripe;
 
 
+import com.ihab.e_commerce.data.enums.PaymentStatus;
+import com.ihab.e_commerce.data.model.Order;
+import com.ihab.e_commerce.data.model.Payment;
 import com.ihab.e_commerce.data.repo.PaymentRepo;
 import com.ihab.e_commerce.exception.GlobalNotFoundException;
 import com.ihab.e_commerce.exception.PaymentFailedException;
 import com.ihab.e_commerce.rest.request.stripe_payment.StripePaymentRequest;
 import com.ihab.e_commerce.service.order.OrderService;
 import com.ihab.e_commerce.service.payment.PaymentService;
+import com.ihab.e_commerce.service.user.main.UserService;
 import com.stripe.Stripe;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
@@ -30,8 +34,11 @@ public class StripePaymentService implements PaymentService {
     @Value("${stripe.secret.key}")
     private String secretKey;
 
-    @Value("${stripe.webhook.key}")
-    private String webhookKey;
+    private final PaymentRepo paymentRepo;
+    private final UserService userService;
+
+
+
 //
 //    private final PaymentRepo paymentRepo;
 //    private final OrderService orderService;
@@ -43,7 +50,7 @@ public class StripePaymentService implements PaymentService {
         Stripe.apiKey = secretKey;
     }
 
-    public PaymentIntent createPaymentIntent(StripePaymentRequest request) {
+    public PaymentIntent createPaymentIntent(Order order, StripePaymentRequest request) {
         try {
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                     .setAmount(request.amount().longValue())
@@ -55,53 +62,26 @@ public class StripePaymentService implements PaymentService {
                                     .build()
                     )
                     .build();
-            return PaymentIntent.create(params);
+            PaymentIntent paymentIntent =  PaymentIntent.create(params);
+
+            // here we save the payment inside the db
+            Payment payment = Payment.builder()
+                    .id(paymentIntent.getId())
+                    .paymentStatues(PaymentStatus.PENDING)
+                    .paymentGateway("STRIPE")
+                    .paymentMethod(paymentIntent.getPaymentMethod())
+                    .user(userService.loadCurrentUser())
+                    .order(order)
+                    .build();
+
+            paymentRepo.save(payment);
+
+            return paymentIntent;
         } catch (Exception e) {
             throw new PaymentFailedException("payment failed for " + e.getMessage());
         }
 
     }
 
-    public Event handleWebhook(String payload, String sigHeader) {
-        Event event = null;
-        if (sigHeader != null && webhookKey != null){
-            try {
-                event = Webhook.constructEvent(payload, sigHeader, webhookKey);
-            } catch (SignatureVerificationException e) {
-                log.error("Webhook error while validating signature.{}", e.getMessage());
-            }
 
-        }
-        if (event != null){
-            handleVerifiedEvent(event);
-            return event;
-        }else {
-            throw new GlobalNotFoundException("there is no event yet");
-        }
-    }
-
-    private void handleVerifiedEvent(Event event) {
-        switch (event.getType()) {
-            case "payment_intent.succeeded":
-                // Handle payment success
-                handlePaymentSuccess(event);
-                break;
-            case "payment_intent.payment_failed":
-                // Handle payment failure
-                handlePaymentFailure(event);
-                break;
-        }
-    }
-
-    private void handlePaymentSuccess(Event event) {
-        PaymentIntent paymentIntent = (PaymentIntent) event.getDataObjectDeserializer().getObject().orElse(null);
-
-        log.info("Payment succeeded: {}", paymentIntent.getId());
-    }
-
-    private void handlePaymentFailure(Event event) {
-        PaymentIntent paymentIntent = (PaymentIntent) event.getDataObjectDeserializer().getObject().orElse(null);
-        // Process failed payment
-        log.error("Payment failed: {}", paymentIntent.getId());
-    }
 }

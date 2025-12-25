@@ -12,7 +12,6 @@ import com.ihab.e_commerce.rest.response.CartResponse;
 import com.ihab.e_commerce.service.product.ProductService;
 import com.ihab.e_commerce.service.user.main.UserService;
 import lombok.RequiredArgsConstructor;
-import org.apache.hc.core5.http.nio.entity.BasicAsyncEntityConsumer;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,7 +31,7 @@ public class CartService {
 // Creating OP
     public Cart initializeCart(Long userId) {
         User user = userService.getUserById(userId);
-        return Optional.ofNullable(getCartByUserId()).orElseGet(
+        return Optional.ofNullable(getCartByItsActivationForCurrentUser(true)).orElseGet(
                 () -> {
                     Cart cart = new Cart();
                     cart.setUser(user);
@@ -44,7 +43,7 @@ public class CartService {
     // Adding OP
     public CartResponse addingProductToCart(Long productId, int quantity) {
 
-        Cart cart = getCartByUserId();
+        Cart cart = getCartByItsActivationForCurrentUser(true);
         Product product = productService.getProductForOthersClasses(productId);
 
         cart.getCartItems()
@@ -82,7 +81,7 @@ public class CartService {
     // Updating OP
     public CartResponse updatingCartItem(Long productId, int quantity) {
         Product product = productService.getProductForOthersClasses(productId);
-        Cart cart = getCartByUserId();
+        Cart cart = getCartByItsActivationForCurrentUser(true);
         cart.getCartItems().stream()
                 .filter(item -> item.getProduct().equals(product))
                 .findFirst()
@@ -107,12 +106,20 @@ public class CartService {
     // Reading OP
     // this for endpoint
     public CartResponse getCurrentCart() {
-        return cartMapper.fromCartToResponse(getCartByUserId());
+        return cartMapper.fromCartToResponse(getCartByItsActivationForCurrentUser(true));
     }
 
-    public Cart getCartByUserId() {
+    public Cart getCartByItsActivationForCurrentUser(Boolean isActive) {
+        /* todo i need to make this return all active cart only
+        *   */
+//        List<Cart> carts = getAllCartByUserId(user.getId());
+//        Cart cart = carts.stream().filter(
+//                expectedCart -> expectedCart.getIsActive() == false
+//        ).findFirst().orElseThrow(
+//                () -> new GlobalNotFoundException("There is no previous order for you")
+//        );
         User user = userService.loadCurrentUser();
-        return cartRepo.findByUserId(user.getId()).orElseGet(
+        return cartRepo.findByUserIdAndIsActive(user.getId(), isActive).orElseGet(
                 () -> {
                     Cart cart = new Cart();
                     cart.setUser(user);
@@ -152,7 +159,9 @@ public class CartService {
     }
 
     // Delete OP
+    // todo this need edit
     public void clearCart(Long cartId) {
+        // it more sensible to let it with cartId
         Cart cart = getCartById(cartId);
         cartItemRepo.deleteAllByCartId(cartId);
         cart.getCartItems().clear();
@@ -160,7 +169,7 @@ public class CartService {
     }
 
     public CartResponse deleteCartItemFromCart(Long cartItemId) {
-        Cart cart = getCartByUserId();
+        Cart cart = getCartByItsActivationForCurrentUser(true);
         CartItem cartItem = getCartItemFromCart(cart.getId(), cartItemId);
         cart.removeItem(cartItem);
 

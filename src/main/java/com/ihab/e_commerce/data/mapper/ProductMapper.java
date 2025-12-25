@@ -1,9 +1,9 @@
 package com.ihab.e_commerce.data.mapper;
 
 import com.ihab.e_commerce.data.model.User;
+import com.ihab.e_commerce.rest.request.ProductRequest;
 import com.ihab.e_commerce.rest.response.ProductResponse;
 import com.ihab.e_commerce.data.dto.MediaDto;
-import com.ihab.e_commerce.data.dto.ProductDto;
 import com.ihab.e_commerce.data.model.Category;
 import com.ihab.e_commerce.data.model.Media;
 import com.ihab.e_commerce.data.model.Product;
@@ -29,21 +29,21 @@ public class ProductMapper {
 
     private final UserMapper userMapper;
 
-    public Product fromDtoToProduct(ProductDto productDto) {
-        Category category = categoryService.getCategoryByName(productDto.getCategoryName());
+    public Product fromDtoToProduct(ProductRequest productRequest) {
+        Category category = categoryService.getCategoryByName(productRequest.getCategoryName());
         return Product.builder()
-                .name(productDto.getProductName())
-                .description(productDto.getDescription())
-                .price(productDto.getPrice())
+                .name(productRequest.getProductName())
+                .description(productRequest.getDescription())
+                .price(productRequest.getPrice())
                 .category(category)
-                .brand(productDto.getBrand())
-                .amount(productDto.getAmount())
+                .brand(productRequest.getBrand())
+                .amount(productRequest.getAmount())
                 .build();
     }
 
-    public ProductDto fromProductToDto(Product product){
+    public ProductRequest fromProductToDto(Product product){
         Category category = product.getCategory();
-        return ProductDto.builder()
+        return ProductRequest.builder()
                 .productName(product.getName())
                 .brand(product.getBrand())
                 .description(product.getDescription())
