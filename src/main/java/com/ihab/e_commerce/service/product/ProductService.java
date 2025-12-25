@@ -3,8 +3,8 @@ package com.ihab.e_commerce.service.product;
 
 import com.ihab.e_commerce.data.model.User;
 import com.ihab.e_commerce.exception.GlobalUnauthorizedActionException;
+import com.ihab.e_commerce.rest.request.ProductRequest;
 import com.ihab.e_commerce.rest.response.ProductResponse;
-import com.ihab.e_commerce.data.dto.ProductDto;
 import com.ihab.e_commerce.data.mapper.ProductMapper;
 import com.ihab.e_commerce.data.model.Category;
 import com.ihab.e_commerce.data.model.Product;
@@ -12,7 +12,6 @@ import com.ihab.e_commerce.data.repo.ProductRepo;
 import com.ihab.e_commerce.exception.GlobalNotFoundException;
 import com.ihab.e_commerce.service.category.CategoryService;
 import com.ihab.e_commerce.service.media.MediaService;
-import com.ihab.e_commerce.service.reviews.ReviewsService;
 import com.ihab.e_commerce.service.user.main.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,8 +71,8 @@ public class ProductService {
     }
 
     // I should add the id from token
-    public ProductResponse addProduct(ProductDto productDto) {
-        Product product = productMapper.fromDtoToProduct(productDto);
+    public ProductResponse addProduct(ProductRequest productRequest) {
+        Product product = productMapper.fromDtoToProduct(productRequest);
         // here we got the user
         product.setVendor(userService.loadCurrentUser());
         productRepo.save(product);
@@ -112,26 +111,26 @@ public class ProductService {
 
     // Should I add this
 
-    public ProductResponse updateProduct(ProductDto productDto, Long productId) {
+    public ProductResponse updateProduct(ProductRequest productRequest, Long productId) {
         Product product = productRepo.findById(productId).orElseThrow(() -> new GlobalNotFoundException(" There is no product with id: " + productId)
         );
         User currentUser = userService.loadCurrentUser();
         if (product.getVendor() != currentUser) {
             throw new GlobalUnauthorizedActionException("You are not allowed to delete this product");
         }
-        Product updatedProduct = productRepo.save(updateProduct(productDto, product));
+        Product updatedProduct = productRepo.save(updateProduct(productRequest, product));
         return productMapper.fromProductToProductResponse(updatedProduct);
     }
 
-    private Product updateProduct(ProductDto productDto, Product product) {
-        Category category = categoryService.getCategoryByName(productDto.getCategoryName());
+    private Product updateProduct(ProductRequest productRequest, Product product) {
+        Category category = categoryService.getCategoryByName(productRequest.getCategoryName());
 
-        product.setAmount(productDto.getAmount());
-        product.setName(productDto.getProductName());
-        product.setBrand(productDto.getBrand());
+        product.setAmount(productRequest.getAmount());
+        product.setName(productRequest.getProductName());
+        product.setBrand(productRequest.getBrand());
         product.setCategory(category);
-        product.setDescription(productDto.getDescription());
-        product.setPrice(productDto.getPrice());
+        product.setDescription(productRequest.getDescription());
+        product.setPrice(productRequest.getPrice());
 
         return product;
     }

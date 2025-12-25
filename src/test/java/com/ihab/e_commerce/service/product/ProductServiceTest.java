@@ -1,15 +1,14 @@
 package com.ihab.e_commerce.service.product;
 
-import com.ihab.e_commerce.data.dto.ProductDto;
 import com.ihab.e_commerce.data.mapper.ProductMapper;
 import com.ihab.e_commerce.data.model.Media;
 import com.ihab.e_commerce.data.model.Product;
 import com.ihab.e_commerce.data.repo.ProductRepo;
 import com.ihab.e_commerce.exception.GlobalNotFoundException;
+import com.ihab.e_commerce.rest.request.ProductRequest;
 import com.ihab.e_commerce.rest.response.ProductResponse;
 import com.ihab.e_commerce.service.category.CategoryService;
 import com.ihab.e_commerce.service.media.MediaService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,12 +16,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -161,7 +157,7 @@ class ProductServiceTest {
                 .name("phone")
                 .price(new BigDecimal(2000))
                 .build();
-        ProductDto productDto = ProductDto.builder()    
+        ProductRequest productRequest = ProductRequest.builder()
                 .productName("phoneTest")
                 .price(new BigDecimal(3000))
                 .build();
@@ -170,9 +166,9 @@ class ProductServiceTest {
         when(productRepo.save(product))
                 .thenAnswer(invocation ->invocation.getArgument(0));
 when(productMapper.fromProductToProductResponse(any(Product.class)));
-        ProductResponse actualResponse = productService.updateProduct(productDto, 1L);
+        ProductResponse actualResponse = productService.updateProduct(productRequest, 1L);
 
-        assertEquals(productDto.getProductName(), actualResponse.getProductName());
+        assertEquals(productRequest.getProductName(), actualResponse.getProductName());
     }
 
 }

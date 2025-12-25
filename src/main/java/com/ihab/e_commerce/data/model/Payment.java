@@ -17,10 +17,10 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name="payment")
 public class Payment {
-
+/* todo i need to make id be the same id that will return from stripe so i could search with it */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String id;
 
     private BigDecimal amount;
 

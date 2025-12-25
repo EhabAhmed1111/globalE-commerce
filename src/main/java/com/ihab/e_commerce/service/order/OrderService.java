@@ -7,11 +7,9 @@ import com.ihab.e_commerce.data.model.*;
 import com.ihab.e_commerce.data.repo.CartRepo;
 import com.ihab.e_commerce.data.repo.OrderItemRepo;
 import com.ihab.e_commerce.data.repo.OrderRepo;
-import com.ihab.e_commerce.data.repo.ProductRepo;
 import com.ihab.e_commerce.exception.GlobalNotFoundException;
 import com.ihab.e_commerce.rest.request.stripe_payment.StripePaymentRequest;
 import com.ihab.e_commerce.rest.response.OrderResponse;
-import com.ihab.e_commerce.rest.response.ProductResponse;
 import com.ihab.e_commerce.rest.response.stripe_payment.StripePaymentResponse;
 import com.ihab.e_commerce.service.cart.CartService;
 import com.ihab.e_commerce.service.payment.stripe.StripePaymentService;
@@ -34,37 +32,43 @@ public class OrderService {
     private final OrderRepo orderRepo;
     private final CartService cartService;
     private final OrderItemRepo orderItemRepo;
-    private final UserService userService;
-    private final CartRepo cartRepo;
+//    private final UserService userService;
+//    private final CartRepo cartRepo;
     private final OrderMapper orderMapper;
     private final StripePaymentService stripePaymentService;
 
     // Creation OP
+    /* todo I need to make condition that if there another cart that has active false
+    *   then this cart will deleted and current cart will become false active*/
     public OrderResponse makeOrder() {
-        Cart cart = cartService.getCartByUserId();
+        // this is the current active cart
+        Cart cart = cartService.getCartByItsActivationForCurrentUser(true);
+        // todo here i need to get the previous active cart in order to delete it
         Order order = makeOrder(cart);
         StripePaymentResponse stripePaymentResponse =  createPaymentForOrder(order, "USD");
-        cart.setIsActive(false);
-        cartRepo.save(cart);
+//        cart.setIsActive(false);
+//        cartRepo.save(cart);
         OrderResponse orderResponse = orderMapper.fromOrderToOrderResponse(order);
         orderResponse.setClientSecret(stripePaymentResponse.clientSecret());
         return orderResponse;
     }
 
     // ReOrder OP
+    // todo this maybe same functionality as find cart
     public Order reOrderLastOrder() {
-        User user = userService.loadCurrentUser();
-        List<Cart> carts = cartService.getAllCartByUserId(user.getId());
-        Cart cart = carts.stream().filter(
-                expectedCart -> expectedCart.getIsActive() == false
-        ).findFirst().orElseThrow(
-                () -> new GlobalNotFoundException("There is no previous order for you")
-        );
+//        User user = userService.loadCurrentUser();
+//        List<Cart> carts = cartService.getAllCartByUserId(user.getId());
+        Cart cart = cartService.getCartByItsActivationForCurrentUser(false);
+//                carts.stream().filter(
+//                expectedCart -> expectedCart.getIsActive() == false
+//        ).findFirst().orElseThrow(
+//                () -> new GlobalNotFoundException("There is no previous order for you")
+//        );
         return makeOrder(cart);
 
     }
 
-    private Order makeOrder( Cart cart){
+    private Order makeOrder(Cart cart){
         Order order = new Order();
         order.setOrderStatus(OrderStatus.PENDING);
         order.setUser(cart.getUser());
@@ -99,7 +103,7 @@ public class OrderService {
                 currency,
                 "payment created for order" + order.getId()
         );
-        PaymentIntent paymentIntent = stripePaymentService.createPaymentIntent(stripePaymentRequest);
+        PaymentIntent paymentIntent = stripePaymentService.createPaymentIntent(order, stripePaymentRequest);
 
         return new StripePaymentResponse(
                 paymentIntent.getId(),
@@ -137,6 +141,8 @@ public class OrderService {
     }
 
     // Cancel OP
+
+    // todo make method that get the cart that has Active false
 
     // todo update orderItem?
 
