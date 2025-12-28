@@ -1,6 +1,7 @@
 package com.ihab.e_commerce.service.product;
 
 
+import com.ihab.e_commerce.data.enums.Role;
 import com.ihab.e_commerce.data.model.User;
 import com.ihab.e_commerce.exception.GlobalUnauthorizedActionException;
 import com.ihab.e_commerce.rest.request.ProductRequest;
@@ -40,6 +41,21 @@ public class ProductService {
 
 
 
+    // this will work if I am vendor
+    public List<ProductResponse> getAllProductForCurrentVendor() {
+        User user = userService.loadCurrentUser();
+        if (user.getRole() != Role.VENDOR) {
+            throw new GlobalUnauthorizedActionException("This only for Vendors");
+        }
+        return userService
+                .getUserById(user.getId())
+                .getProducts()
+                .stream()
+                .map(productMapper::fromProductToProductResponse)
+                .collect(Collectors.toList());
+    }
+
+    // this will work when I enter to the product
     public List<ProductResponse> getAllProductByVendorId(Long vendorId) {
         return userService
                 .getUserById(vendorId)

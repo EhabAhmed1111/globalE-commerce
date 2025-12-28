@@ -34,7 +34,7 @@ public class Payment {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_status")
-    private PaymentStatus paymentStatues;
+    private PaymentStatus paymentStatus;
 
     @CreationTimestamp
     @Column(name = "created_at")

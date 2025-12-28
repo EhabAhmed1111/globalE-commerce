@@ -32,11 +32,11 @@ public class OrderController {
 
     @GetMapping("/{orderId}")
     public ResponseEntity<GlobalSuccessResponse> getSpecificOrder(@PathVariable Long orderId){
-        Order order = orderService.getOrder(orderId);
+        OrderResponse order = orderService.getOrder(orderId);
         return ResponseEntity.ok(new GlobalSuccessResponse("Order fetched successfully", order));
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<GlobalSuccessResponse> getAllUserOrders(@PathVariable Long userId){
         List<Order> orders = orderService.getAllOrderForUser(userId);
         return ResponseEntity.ok(new GlobalSuccessResponse("Order fetched successfully", orders));
