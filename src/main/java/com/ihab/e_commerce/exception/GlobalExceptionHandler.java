@@ -34,10 +34,35 @@ public class GlobalExceptionHandler {
         GlobalExceptionResponse exceptionResponse =
                 GlobalExceptionResponse.builder()
                         .date(System.currentTimeMillis())
-                        .status(HttpStatus.CONFLICT.value())
+                        .status(HttpStatus.UNAUTHORIZED.value())
                         .message(globalUnauthorizedActionException.getMessage())
                         .build();
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+
+    @ExceptionHandler
+    public ResponseEntity<GlobalExceptionResponse> handleIllegalStateException(IllegalStateException illegalStateException){
+
+        GlobalExceptionResponse exceptionResponse =
+                GlobalExceptionResponse.builder()
+                        .date(System.currentTimeMillis())
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                        .message(illegalStateException.getMessage())
+                        .build();
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<GlobalExceptionResponse> handleSecurityException(SecurityException securityException){
+
+        GlobalExceptionResponse exceptionResponse =
+                GlobalExceptionResponse.builder()
+                        .date(System.currentTimeMillis())
+                        .status(HttpStatus.UNAUTHORIZED.value())
+                        .message(securityException.getMessage())
+                        .build();
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.UNAUTHORIZED);
     }
     @ExceptionHandler
     public ResponseEntity<GlobalExceptionResponse> handleConflictException(GlobalConflictException globalConflictException){

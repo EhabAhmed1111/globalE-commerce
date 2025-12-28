@@ -45,6 +45,15 @@ public class ProductController {
         return ResponseEntity.ok(new GlobalSuccessResponse(" Product fetched successfully", products));
     }
 
+    @GetMapping("/vendor")
+    @PreAuthorize("(hasRole('VENDOR')) and (hasAuthority('vendor:read'))")
+    public ResponseEntity<GlobalSuccessResponse> getAllProductForCurrentVendor(
+    ) {
+        /* I don't need a user here */
+        List<ProductResponse> products = productService.getAllProductForCurrentVendor();
+        return ResponseEntity.ok(new GlobalSuccessResponse(" Product fetched successfully", products));
+    }
+
     @PostMapping
     // no need for admin to create product
     @PreAuthorize("(hasRole('VENDOR')) and (hasAuthority('vendor:create'))")

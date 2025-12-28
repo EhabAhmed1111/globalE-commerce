@@ -8,6 +8,7 @@ import com.ihab.e_commerce.data.repo.PaymentRepo;
 import com.ihab.e_commerce.exception.GlobalNotFoundException;
 import com.ihab.e_commerce.exception.PaymentFailedException;
 import com.ihab.e_commerce.rest.request.stripe_payment.StripePaymentRequest;
+import com.ihab.e_commerce.rest.response.stripe_payment.StripePaymentResponse;
 import com.ihab.e_commerce.service.order.OrderService;
 import com.ihab.e_commerce.service.payment.PaymentService;
 import com.ihab.e_commerce.service.user.main.UserService;
@@ -38,17 +39,16 @@ public class StripePaymentService implements PaymentService {
     private final UserService userService;
 
 
-
-//
-//    private final PaymentRepo paymentRepo;
-//    private final OrderService orderService;
-
-
     // this will run after all
     @PostConstruct
     public void init() {
         Stripe.apiKey = secretKey;
     }
+
+
+//    private final PaymentRepo paymentRepo;
+//    private final OrderService orderService;
+
 
     public PaymentIntent createPaymentIntent(Order order, StripePaymentRequest request) {
         try {
@@ -62,12 +62,14 @@ public class StripePaymentService implements PaymentService {
                                     .build()
                     )
                     .build();
-            PaymentIntent paymentIntent =  PaymentIntent.create(params);
+            PaymentIntent paymentIntent = PaymentIntent.create(params);
 
             // here we save the payment inside the db
             Payment payment = Payment.builder()
                     .id(paymentIntent.getId())
-                    .paymentStatues(PaymentStatus.PENDING)
+                    .amount(order.getTotalPrice())
+                    .currency("USD")
+                    .paymentStatus(PaymentStatus.PENDING)
                     .paymentGateway("STRIPE")
                     .paymentMethod(paymentIntent.getPaymentMethod())
                     .user(userService.loadCurrentUser())
@@ -84,4 +86,16 @@ public class StripePaymentService implements PaymentService {
     }
 
 
+    public StripePaymentResponse getPaymentById(String id) {
+        Payment payment = paymentRepo.findById(id).orElseThrow(
+                ()-> new GlobalNotFoundException("there is no payment")
+        );
+        return new StripePaymentResponse(
+                payment.getId(),
+                null,
+                payment.getAmount().longValue(),
+                payment.getCurrency(),
+                payment.getPaymentStatus().name()
+        );
+    }
 }

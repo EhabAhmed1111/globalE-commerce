@@ -50,6 +50,7 @@ public class OrderService {
 //        cartRepo.save(cart);
         OrderResponse orderResponse = orderMapper.fromOrderToOrderResponse(order);
         orderResponse.setClientSecret(stripePaymentResponse.clientSecret());
+        orderResponse.setPaymentId(stripePaymentResponse.id());
         return orderResponse;
     }
 
@@ -130,10 +131,12 @@ public class OrderService {
 //    }
 
     // Read OP
-    public Order getOrder(Long orderId) {
-        return orderRepo.findById(orderId).orElseThrow(
+    public OrderResponse getOrder(Long orderId) {
+         Order order = orderRepo.findById(orderId).orElseThrow(
                 () -> new GlobalNotFoundException("There is no Order with id: " + orderId)
         );
+
+         return orderMapper.fromOrderToOrderResponse(order);
     }
 
     public List<Order> getAllOrderForUser(Long userId) {

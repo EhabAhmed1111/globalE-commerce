@@ -38,21 +38,30 @@ public class StripeWebhookHandlerService {
     private final CartService cartService;
     private final CartRepo cartRepo;
 
-    public Event handleWebhook(String payload, String sigHeader) {
-        Event event = null;
-        if (sigHeader != null && webhookKey != null) {
-            try {
-                event = Webhook.constructEvent(payload, sigHeader, webhookKey);
-            } catch (SignatureVerificationException e) {
-                log.error("Webhook error while validating signature.{}", e.getMessage());
-            }
+    public void handleWebhook(String payload, String sigHeader) {
 
+        if (sigHeader == null ) {
+            log.error("Missing signature header in webhook");
+            throw new IllegalArgumentException("Missing signature header");
         }
+        if (webhookKey == null ) {
+            log.error("Webhook key not configured");
+            throw new IllegalStateException("Webhook key not configured");
+        }
+
+        Event event;
+        try {
+            event = Webhook.constructEvent(payload, sigHeader, webhookKey);
+        } catch (SignatureVerificationException e) {
+            log.error("Webhook error while validating signature.{}", e.getMessage());
+            throw new SecurityException("Invalid webhook signature", e);
+        }
+
         if (event != null) {
             handleVerifiedEvent(event);
-            return event;
         } else {
-            throw new GlobalNotFoundException("there is no event yet");
+            log.error("Webhook event construction returned null");
+            throw new IllegalStateException("Failed to construct webhook event");
         }
     }
 
@@ -66,6 +75,11 @@ public class StripeWebhookHandlerService {
                 // Handle payment failure
                 handlePaymentFailure(event);
                 break;
+            default:
+                log.debug("Unhandled webhook event type: {}", event.getType());
+                // Depending on requirements, you might want to throw an exception
+                // or just log and ignore unknown event types
+                break;
         }
     }
 
@@ -78,7 +92,7 @@ public class StripeWebhookHandlerService {
                 () -> new GlobalNotFoundException("There is no Payment here")
         );
 
-        payment.setPaymentStatues(PaymentStatus.SUCCESS);
+        payment.setPaymentStatus(PaymentStatus.SUCCESS);
         Order order = payment.getOrder();
         order.setOrderStatus(OrderStatus.PAYMENT_DONE);
 
@@ -129,7 +143,7 @@ public class StripeWebhookHandlerService {
                 () -> new GlobalNotFoundException("There is no Payment here")
         );
 
-        payment.setPaymentStatues(PaymentStatus.CANCELLED);
+        payment.setPaymentStatus(PaymentStatus.CANCELLED);
         Order order = payment.getOrder();
         order.setOrderStatus(OrderStatus.CANCELED);
 

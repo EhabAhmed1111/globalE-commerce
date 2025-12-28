@@ -157,6 +157,7 @@ CREATE TABLE "payment" (
 "currency" VARCHAR(30),
 "payment_method" VARCHAR(255),
 "payment_gateway" VARCHAR(255) default 'STRIPE',
+"payment_status" VARCHAR(250),
 "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 "order_id" BIGINT NOT NULL,
 CONSTRAINT "payment_pkey" PRIMARY KEY ("id"),

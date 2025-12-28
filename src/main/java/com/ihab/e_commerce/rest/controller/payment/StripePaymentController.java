@@ -33,7 +33,11 @@ public class StripePaymentController {
 //        );
 //        return ResponseEntity.ok(new GlobalSuccessResponse("Payment created successfully", stripePaymentResponse));
 //    }
-
+@GetMapping("/{id}")
+public ResponseEntity<GlobalSuccessResponse> getPaymentForSpecificOrder(@PathVariable String id) {
+    StripePaymentResponse stripePaymentResponse = paymentService.getPaymentById(id);
+        return ResponseEntity.ok(new GlobalSuccessResponse("Payment fetched successfully", stripePaymentResponse));
+}
     @PostMapping("/webhook")
     public ResponseEntity<String> handleWebhook(@RequestBody String payload, @RequestHeader("Stripe-Signature") String sigHeader ) {
         log.info("Received webhook with signature: {}", sigHeader);

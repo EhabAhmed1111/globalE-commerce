@@ -32,6 +32,7 @@ public class OrderResponse {
     private UserDto user;
     private Set<OrderItemDto> orderItems;
     private String clientSecret;
+    private String paymentId;
 
 //    private Set<Payment> payments;
 
