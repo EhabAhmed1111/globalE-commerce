@@ -2,12 +2,17 @@ package com.ihab.e_commerce.rest.controller.user.main;
 
 import com.ihab.e_commerce.data.model.User;
 import com.ihab.e_commerce.rest.response.GlobalSuccessResponse;
+import com.ihab.e_commerce.rest.response.vendor.VendorResponse;
 import com.ihab.e_commerce.rest.response.WishlistResponse;
+import com.ihab.e_commerce.rest.response.vendor.VendorsResponse;
 import com.ihab.e_commerce.service.user.main.UserService;
 import com.ihab.e_commerce.service.user.wishlist.WishlistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("${api.prefix}/users")
@@ -25,11 +30,22 @@ public class UserController {
         return ResponseEntity.ok(new GlobalSuccessResponse("User found", user));
     }
 
+
+
     // This for admin
     @DeleteMapping("/{userId}")
+    @PreAuthorize("(hasRole('ADMIN')) and (hasAuthority('admin:delete'))")
     public ResponseEntity<GlobalSuccessResponse> deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
         return ResponseEntity.ok(new GlobalSuccessResponse("User deleted", null));
+    }
+
+    /*  get all vendor for admin*/
+    @GetMapping("/vendors")
+//    @PreAuthorize("(hasRole('ADMIN')) and (hasAuthority('admin:read'))")
+    public ResponseEntity<GlobalSuccessResponse> getAllVendor() {
+        VendorsResponse vendors = userService.getAllVendors();
+        return ResponseEntity.ok(new GlobalSuccessResponse("All vendor are fetched successfully", vendors));
     }
 
     @PutMapping("/{currentUserId}")

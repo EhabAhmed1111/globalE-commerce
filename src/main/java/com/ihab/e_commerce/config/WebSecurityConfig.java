@@ -36,6 +36,8 @@ public class WebSecurityConfig {
                         request
                                 .requestMatchers("/api/v1/auth/**")
                                 .permitAll()
+                                .requestMatchers(GET, "/api/v1/users/vendors")
+                                .permitAll()
                                 .requestMatchers(GET, "/api/v1/products/**")
                                 .permitAll()
                                 .requestMatchers(GET, "/api/v1/categories/**")
