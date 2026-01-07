@@ -2,6 +2,7 @@ package com.ihab.e_commerce.service.order;
 
 
 import com.ihab.e_commerce.data.enums.OrderStatus;
+import com.ihab.e_commerce.data.mapper.OrderItemMapper;
 import com.ihab.e_commerce.data.mapper.OrderMapper;
 import com.ihab.e_commerce.data.model.*;
 import com.ihab.e_commerce.data.repo.CartRepo;
@@ -9,6 +10,7 @@ import com.ihab.e_commerce.data.repo.OrderItemRepo;
 import com.ihab.e_commerce.data.repo.OrderRepo;
 import com.ihab.e_commerce.exception.GlobalNotFoundException;
 import com.ihab.e_commerce.rest.request.stripe_payment.StripePaymentRequest;
+import com.ihab.e_commerce.rest.response.OrderItemResponse;
 import com.ihab.e_commerce.rest.response.OrderResponse;
 import com.ihab.e_commerce.rest.response.stripe_payment.StripePaymentResponse;
 import com.ihab.e_commerce.service.cart.CartService;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+    // todo we need to get all order by specific seller !important
     // todo(when order is made of a cart -> change isActive to false)
     /*
      * todo if order made for same user for other cart
@@ -32,9 +35,10 @@ public class OrderService {
     private final OrderRepo orderRepo;
     private final CartService cartService;
     private final OrderItemRepo orderItemRepo;
-//    private final UserService userService;
+    private final UserService userService;
 //    private final CartRepo cartRepo;
     private final OrderMapper orderMapper;
+    private final OrderItemMapper orderItemMapper;
     private final StripePaymentService stripePaymentService;
 
     // Creation OP
@@ -71,8 +75,9 @@ public class OrderService {
 
     private Order makeOrder(Cart cart){
         Order order = new Order();
+
         order.setOrderStatus(OrderStatus.PENDING);
-        order.setUser(cart.getUser());
+        order.setBuyer(cart.getUser());
         orderRepo.save(order);
         order.addItems(
                 cart.getCartItems().stream().map(
@@ -115,8 +120,11 @@ public class OrderService {
         );
     }
     private OrderItem makeOrderItemFromCartItem(Order order, CartItem item) {
+        User vendor = item.getProduct().getVendor();
         OrderItem orderItem = OrderItem.builder()
                 .product(item.getProduct())
+                // here we put with each item its vendor
+                .vendor(vendor)
                 .unitePrice(item.getUnitePrice())
                 .quantity(item.getQuantity())
                 .totalPrice(item.getTotalPrice())
@@ -140,13 +148,18 @@ public class OrderService {
     }
 
     public List<Order> getAllOrderForUser(Long userId) {
-        return orderRepo.findAllByUserId(userId);
+        return orderRepo.findAllByBuyerId(userId);
     }
 
     // Cancel OP
 
     // todo make method that get the cart that has Active false
 
-    // todo update orderItem?
+
+    public List<OrderItemResponse> getAllOrderItemForCurrentVendor() {
+        Long vendorId = userService.loadCurrentUser().getId();
+        List<OrderItem> orderItems = orderItemRepo.findAllByVendorId(vendorId);
+        return orderItemMapper.fromListOfOrderItemToListOfOrderItemResponse(orderItems);
+    }
 
 }

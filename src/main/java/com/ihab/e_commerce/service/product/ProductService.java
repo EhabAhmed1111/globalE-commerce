@@ -99,9 +99,16 @@ public class ProductService {
     public void deleteProduct(Long productId) {
         Product product = getProductForOthersClasses(productId);
         User currentUser = userService.loadCurrentUser();
-        if (currentUser.getRole() != ADMIN || product.getVendor() != currentUser) {
-            throw new GlobalUnauthorizedActionException("You are not allowed to delete this product");
+
+
+        if( product.getVendor() != currentUser) {
+            log.info("Current user is not the vendor in deleteProductFunction");
+            if (currentUser.getRole() != ADMIN ) {
+                log.info("Current user is not admin too in deleteProductFunction");
+                throw new GlobalUnauthorizedActionException("You are not allowed to delete this product ");
+            }
         }
+        log.info("Current user is either admin or the vendor of this product {} in deleteProductFunction", productId);
 
         product.getMedia().forEach(
                 media -> {

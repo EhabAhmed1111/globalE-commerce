@@ -3,6 +3,7 @@ package com.ihab.e_commerce.rest.controller.order;
 
 import com.ihab.e_commerce.data.model.Order;
 import com.ihab.e_commerce.rest.response.GlobalSuccessResponse;
+import com.ihab.e_commerce.rest.response.OrderItemResponse;
 import com.ihab.e_commerce.rest.response.OrderResponse;
 import com.ihab.e_commerce.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,12 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+
+    @GetMapping("/order-items/vendor")
+    public ResponseEntity<GlobalSuccessResponse> getAllOrderItemForCurrentVendor() {
+        List<OrderItemResponse> orderItemResponses = orderService.getAllOrderItemForCurrentVendor();
+        return ResponseEntity.ok(new GlobalSuccessResponse("OrderItems fetched successfully", orderItemResponses));
+    }
 
     @PostMapping()
     public ResponseEntity<GlobalSuccessResponse> createOrder(){

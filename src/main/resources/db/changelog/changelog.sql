@@ -97,9 +97,9 @@ CREATE TABLE "customer_order" (
 "order_status" VARCHAR(250),
 "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 "updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-"user_id" BIGINT NOT NULL,
+"buyer_id" BIGINT NOT NULL,
 CONSTRAINT "order_pkey" PRIMARY KEY ("id"),
-CONSTRAINT "order_fkey" FOREIGN KEY ("user_id") REFERENCES "_user"("id") ON DELETE CASCADE ON UPDATE NO ACTION
+CONSTRAINT "order_buyer_fkey" FOREIGN KEY ("buyer_id") REFERENCES "_user"("id") ON DELETE CASCADE ON UPDATE NO ACTION
 );
 --rollback drop table order;
 
@@ -113,9 +113,11 @@ CREATE TABLE "customer_order_item" (
 "updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 "order_id" BIGINT NOT NULL,
 "product_id" BIGINT NOT NULL,
+"vendor_id" BIGINT NOT NULL,
 CONSTRAINT "order_item_pkey" PRIMARY KEY ("id"),
 CONSTRAINT "customer_order_item_customer_order_fkey" FOREIGN KEY ("order_id") REFERENCES "customer_order"("id") ON DELETE CASCADE ON UPDATE NO ACTION,
-CONSTRAINT "order_item_product_fkey" FOREIGN KEY ("product_id") REFERENCES "product"("id") ON DELETE CASCADE ON UPDATE NO ACTION
+CONSTRAINT "order_item_product_fkey" FOREIGN KEY ("product_id") REFERENCES "product"("id") ON DELETE CASCADE ON UPDATE NO ACTION,
+CONSTRAINT "order_vendor_fkey" FOREIGN KEY ("vendor_id") REFERENCES "_user"("id") ON DELETE CASCADE ON UPDATE NO ACTION
 );
 --rollback drop table order_item;
 

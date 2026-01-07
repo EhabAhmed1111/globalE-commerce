@@ -53,7 +53,7 @@ public class StripePaymentService implements PaymentService {
     public PaymentIntent createPaymentIntent(Order order, StripePaymentRequest request) {
         try {
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-                    .setAmount(request.amount().longValue())
+                    .setAmount(request.amount().longValueExact())
                     .setCurrency(request.currency())
                     .setDescription(request.description())
                     .setAutomaticPaymentMethods(
