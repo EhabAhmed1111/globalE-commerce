@@ -123,7 +123,8 @@ public class OrderService {
         User vendor = item.getProduct().getVendor();
         OrderItem orderItem = OrderItem.builder()
                 .product(item.getProduct())
-                // here we put with each item its vendor
+                /* todo we need to remove it from here and add it in webhook
+                *   so the vendor will only be put only if the OrderStatus is complete*/
                 .vendor(vendor)
                 .unitePrice(item.getUnitePrice())
                 .quantity(item.getQuantity())

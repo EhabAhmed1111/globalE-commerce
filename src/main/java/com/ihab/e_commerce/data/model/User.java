@@ -68,6 +68,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval=true)
     private Set<Order> orders;
 
+    /* todo
+    *   this must be change
+    *   instead of directly putting it here even if the OrderStatus is pending
+    *   I will put value in it only if the OrderStatus is COMPLETE  */
     @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval=true)
     private Set<OrderItem> soldOrderItems;
 
