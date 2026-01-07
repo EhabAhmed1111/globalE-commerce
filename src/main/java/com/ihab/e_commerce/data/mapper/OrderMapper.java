@@ -20,7 +20,7 @@ public class OrderMapper {
                 .orderStatus(order.getOrderStatus())
                 .totalPrice(order.getTotalPrice())
                 .createdAt(order.getCreatedAt())
-                .user(userMapper.fromUserToDto(order.getUser()))
+                .user(userMapper.fromUserToDto(order.getBuyer()))
                 .orderItems(orderItemMapper.fromSetOfOrderItemToSetOfOrderItemsDto(order.getOrderItems()))
                 .build();
     }
