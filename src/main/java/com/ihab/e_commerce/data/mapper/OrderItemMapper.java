@@ -48,24 +48,26 @@ public class OrderItemMapper {
                 : orderItems.stream().map(this::fromOrderItemToDto).collect(Collectors.toSet());
     }
 
-    public OrderItemResponse fromOrderItemToOrderItemResponse(OrderItem orderItem) {
-        return OrderItemResponse.builder()
-                .id(orderItem.getId())
-                .buyerName(orderItem.getOrder().getBuyer().getFirstName() + " " + orderItem.getOrder().getBuyer().getLastName())
-                .orderStatus(orderItem.getOrder().getOrderStatus())
-                .totalPrice(orderItem.getTotalPrice())
-                .createdAt(orderItem.getCreatedAt())
-                .quantity(orderItem.getQuantity())
-                .unitePrice(orderItem.getUnitePrice())
-                .build();
-    }
+//    public OrderItemResponse fromOrderItemToOrderItemResponse(OrderItem orderItem) {
+//        Order order = orderItem.getOrder();
+//        return OrderItemResponse.builder()
+//                .id(orderItem.getId())
+//                .buyerName(orderItem.getOrder().getBuyer().getFirstName() + " " + orderItem.getOrder().getBuyer().getLastName())
+//                .orderStatus(orderItem.getOrder().getOrderStatus())
+//                .totalPrice(orderItem.getTotalPrice())
+//                .createdAt(orderItem.getCreatedAt())
+//                .quantity(orderItem.getQuantity())
+//                .unitePrice(orderItem.getUnitePrice())
+//                .orderId(order.getId())
+//                .build();
+//    }
 
-    public List<OrderItemResponse> fromListOfOrderItemToListOfOrderItemResponse(List<OrderItem> orderItems) {
-        return orderItems == null ? Collections.emptyList() :
-                orderItems
-                        .stream()
-                        .map(this::fromOrderItemToOrderItemResponse)
-                        .collect(Collectors.toList());
-    }
+//    public List<OrderItemResponse> fromListOfOrderItemToListOfOrderItemResponse(List<OrderItem> orderItems) {
+//        return orderItems == null ? Collections.emptyList() :
+//                orderItems
+//                        .stream()
+//                        .map(this::fromOrderItemToOrderItemResponse)
+//                        .collect(Collectors.toList());
+//    }
 
 }

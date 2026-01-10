@@ -36,6 +36,7 @@ public class CartItem {
     @Column(name="created_at")
     private LocalDateTime createdAt;
 
+    @Column
     private Integer quantity;
 
     // UniDirection

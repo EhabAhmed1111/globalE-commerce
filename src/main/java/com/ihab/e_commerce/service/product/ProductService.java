@@ -108,7 +108,7 @@ public class ProductService {
                 throw new GlobalUnauthorizedActionException("You are not allowed to delete this product ");
             }
         }
-        log.info("Current user is either admin or the vendor of this product {} in deleteProductFunction", productId);
+        log.info("Current user is either admin or the vendor of this product with id: {} in deleteProductFunction", productId);
 
         product.getMedia().forEach(
                 media -> {

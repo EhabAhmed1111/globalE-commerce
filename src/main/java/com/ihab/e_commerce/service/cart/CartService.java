@@ -54,7 +54,8 @@ public class CartService {
                 .findFirst()
                 .ifPresentOrElse(
                         item -> {
-                            item.setQuantity(item.getQuantity() + quantity <= product.getAmount() ? item.getQuantity() + quantity : product.getAmount());
+                           Integer amountOfProduct = quantity + item.getQuantity() <= product.getAmount() ? item.getQuantity() + quantity: product.getAmount();
+                                item.setQuantity(amountOfProduct);
                             item.setTotalPrice();
                             cartItemRepo.save(item);
                         },

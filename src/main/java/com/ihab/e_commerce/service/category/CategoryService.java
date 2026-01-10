@@ -5,6 +5,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.ihab.e_commerce.data.model.Category;
 import com.ihab.e_commerce.data.repo.CategoryRepo;
+import com.ihab.e_commerce.exception.GlobalConflictException;
 import com.ihab.e_commerce.exception.GlobalNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,10 +54,20 @@ public class CategoryService {
 
 
     // only ADMIN Role
-    public Category updateCategory(Category category, Long currentCategoryId) {
-        Category existedCategory = getCategoryById(currentCategoryId);
-        existedCategory.setName(category.getName());
-        return categoryRepo.save(existedCategory);
+    public Category updateCategory(Category request, Long currentCategoryId) {
+        Category existingCategory = getCategoryById(currentCategoryId);
+
+        // Check if there is another category with the same name
+            categoryRepo.findByName(request.getName())
+                    .ifPresent(c -> {
+                        throw new GlobalConflictException(
+                                "Category with name '" + request.getName() + "' already exists"
+                        );
+                    });
+            existingCategory.setName(request.getName());
+
+
+        return categoryRepo.save(existingCategory);
     }
 
     public Category deleteCategoryById(Long id) {
@@ -66,10 +77,11 @@ public class CategoryService {
     }
 
     public Category addCategory(Category category) {
-        // Maybe I could add check case to check if their another category with same name?
-        // should I add exception in case there is null value
-//        Category category = categoryMapper.fromDtoToCategory(categoryDto);
-        return categoryRepo.save(category);
+        // if there are another category with the same name it should return it
+       return categoryRepo.findByName(category.getName()).orElseGet(
+               () -> categoryRepo.save(category)
+       );
+
     }
 
     public Category addImageToCategory(MultipartFile file, Long categoryId){

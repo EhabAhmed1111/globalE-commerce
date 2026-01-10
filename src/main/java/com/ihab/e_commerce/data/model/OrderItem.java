@@ -16,13 +16,13 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name="customer_order_item")
-@NamedEntityGraph(
-        name = "with-name-and-order",
-        attributeNodes = {
-                @NamedAttributeNode("vendor"),
-                @NamedAttributeNode("order")
-        }
-)
+//@NamedEntityGraph(
+//        name = "with-name-and-order",
+//        attributeNodes = {
+//                @NamedAttributeNode("vendor"),
+//                @NamedAttributeNode("order")
+//        }
+//)
 public class OrderItem {
 
     @Id

@@ -21,12 +21,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 public class OrderItemResponse {
-
-    private Long id;
+    private Long orderId;
+//    private Long id;
     private BigDecimal totalPrice;
-    private BigDecimal unitePrice;
+//    private BigDecimal unitePrice;
     private LocalDateTime createdAt;
-    private Integer quantity;
+//    private Integer quantity;
     private OrderStatus orderStatus;
     private String buyerName;
+
 }

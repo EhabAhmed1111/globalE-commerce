@@ -25,7 +25,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public GlobalSuccessResponse register(RegisterRequest request) {
-        /* todo handel conflict email*/
+        /* todo handle conflict email*/
         var user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
