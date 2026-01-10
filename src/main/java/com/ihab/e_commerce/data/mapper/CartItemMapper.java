@@ -52,7 +52,7 @@ private final ProductMapper productMapper;
                             .quantity(cartItem.getQuantity())
                             .createdAt(cartItem.getCreatedAt())
                             .updatedAt(cartItem.getUpdatedAt())
-                            .totalPrice(cartItem.getUnitePrice())
+                            .totalPrice(cartItem.getTotalPrice())
                             .build();
                 }
         ).collect(Collectors.toSet());

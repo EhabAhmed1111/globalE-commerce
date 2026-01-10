@@ -66,7 +66,7 @@ public class ProductController {
     @PreAuthorize("(hasAnyRole('ADMIN', 'VENDOR')) and (hasAnyAuthority('admin:delete', 'vendor:delete'))")
     public ResponseEntity<GlobalSuccessResponse> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
-        return ResponseEntity.ok(new GlobalSuccessResponse(" Product fetched successfully", null));
+        return ResponseEntity.ok(new GlobalSuccessResponse(" Product deleted successfully", null));
     }
 
     @PutMapping("/{id}")

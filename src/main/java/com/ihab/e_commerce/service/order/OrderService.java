@@ -159,8 +159,7 @@ public class OrderService {
 
     public List<OrderItemResponse> getAllOrderItemForCurrentVendor() {
         Long vendorId = userService.loadCurrentUser().getId();
-        List<OrderItem> orderItems = orderItemRepo.findAllByVendorId(vendorId);
-        return orderItemMapper.fromListOfOrderItemToListOfOrderItemResponse(orderItems);
+        return  orderItemRepo.getAllOrderItemForVendor(vendorId);
     }
 
 }

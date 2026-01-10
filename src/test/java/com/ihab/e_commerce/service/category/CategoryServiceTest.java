@@ -2,6 +2,7 @@ package com.ihab.e_commerce.service.category;
 
 import com.ihab.e_commerce.data.model.Category;
 import com.ihab.e_commerce.data.repo.CategoryRepo;
+import com.ihab.e_commerce.exception.GlobalConflictException;
 import com.ihab.e_commerce.exception.GlobalNotFoundException;
 import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.Test;
@@ -28,32 +29,72 @@ class CategoryServiceTest {
     @InjectMocks
     private CategoryService categoryService;
 
+
     @Test
-    void getAllCategories_ShouldReturnAllCategory_WhenThereAreCategories() {
+    void addCategory_shouldAddNewCategoryAndReturnIt_whenThereIsNoCategoryWithSameName() {
         // Given
-        List<Category> categories = List.of(
+        Category expectedCategory = Category.builder()
+                .id(1L)
+                .name("Electronic")
+                .build();
+
+        when(categoryRepo.save(expectedCategory)).thenReturn(expectedCategory);
+        when(categoryRepo.findByName(expectedCategory.getName())).thenReturn(Optional.empty());
+
+        // When
+        Category actualCategory = categoryService.addCategory(expectedCategory);
+
+
+        // Then
+        assertEquals(expectedCategory, actualCategory);
+    }
+
+    @Test
+    void addCategory_shouldReturnTheExistingOne_whenItHasSameName() {
+        // Given
+        Category expectedCategory = Category.builder()
+                .id(1L)
+                .name("Electronic")
+                .build();
+
+        when(categoryRepo.findByName(expectedCategory.getName())).thenReturn(Optional.of(expectedCategory));
+
+        // When
+        Category actualCategory = categoryService.addCategory(expectedCategory);
+
+
+        // Then
+        assertEquals(expectedCategory, actualCategory);
+    }
+
+    @Test
+    void getAllCategories_shouldReturnAllCategory_whenThereAreCategories() {
+        // Given
+        List<Category> expectedCategories = List.of(
                 Category.builder()
                         .id(1L)
                         .name("Electronic")
                         .build());
 
-        when(categoryRepo.findAll()).thenReturn(categories);
+        when(categoryRepo.findAll()).thenReturn(expectedCategories);
+
         // When
         List<Category> actualCategories = categoryService.getAllCategories();
 
 
         // Then
-        assertEquals(categories, actualCategories);
+        assertEquals(expectedCategories, actualCategories);
 
     }
 
     @Test
-    void getAllCategories_ShouldReturnEmptyList_WhenThereIsNoCategory() {
+    void getAllCategories_shouldReturnEmptyList_whenThereIsNoCategory() {
+
         // Given
         when(categoryRepo.findAll()).thenReturn(Collections.emptyList());
+
         // When
         List<Category> actualCategories = categoryService.getAllCategories();
-
 
         // Then
         assertTrue(actualCategories.isEmpty());
@@ -61,25 +102,24 @@ class CategoryServiceTest {
     }
 
     @Test
-    void getCategoryById_ShouldReturnCategory_WhenIdIsCorrect() {
+    void getCategoryById_shouldReturnCategory_whenIdIsCorrect() {
         // Given
-        Category category = Category.builder()
+        Category expectedCategory = Category.builder()
                 .id(1L)
                 .name("Electronic")
                 .build();
 
-        when(categoryRepo.findById(category.getId())).thenReturn(Optional.of(category));
+        when(categoryRepo.findById(expectedCategory.getId())).thenReturn(Optional.of(expectedCategory));
 
         // When
-        Category actualCategory = categoryService.getCategoryById(1L);
-
+        Category actualCategory = categoryService.getCategoryById(expectedCategory.getId());
 
         // Then
-        assertEquals(category, actualCategory);
+        assertEquals(expectedCategory, actualCategory);
     }
 
     @Test
-    void getCategoryById_ShouldThrowException_WhenIdIsIncorrect() {
+    void getCategoryById_shouldThrowException_whenIdIsIncorrect() {
         // Given
         Long nonExistedId = 999L;
         when(categoryRepo.findById(nonExistedId)).thenReturn(Optional.empty());
@@ -87,9 +127,8 @@ class CategoryServiceTest {
         // When
         // Then
         GlobalNotFoundException exception = assertThrows(GlobalNotFoundException.class,
-                () -> {
-                    categoryService.getCategoryById(nonExistedId);
-                });
+                () -> categoryService.getCategoryById(nonExistedId)
+        );
         String actualMessage = exception.getMessage();
         String expectedMessage = "There is no category with id: " + nonExistedId;
 
@@ -97,31 +136,27 @@ class CategoryServiceTest {
     }
 
     @Test
-    void getCategoryByName_ShouldReturnCategory_WhenNameIsCorrect() {
+    void getCategoryByName_shouldReturnCategory_whenNameIsCorrect() {
         // Given
-        Category category = Category.builder()
+        Category expectedCategory = Category.builder()
                 .id(1L)
                 .name("Electronic")
                 .build();
 
-        when(categoryRepo.findByName(category.getName())).thenReturn(Optional.of(category));
+        when(categoryRepo.findByName(expectedCategory.getName())).thenReturn(Optional.of(expectedCategory));
 
         // When
         Category actualCategory = categoryService.getCategoryByName("Electronic");
 
 
         // Then
-        assertEquals(category, actualCategory);
+        assertEquals(expectedCategory, actualCategory);
     }
 
     @Test
-    void getCategoryByName_ShouldThrowException_WhenNameIsIncorrect() {
+    void getCategoryByName_shouldThrowException_whenNameIsIncorrect() {
         // Given
         String nonExistedName = "NonExistedCategory";
-        Category category = Category.builder()
-                .id(1L)
-                .name("Electronic")
-                .build();
 
         when(categoryRepo.findByName(nonExistedName)).thenReturn(Optional.empty());
 
@@ -138,71 +173,84 @@ class CategoryServiceTest {
     }
 
 
+    // should I test it, it is only repo method
     @Test
-    void deleteCategoryById_ShouldDeleteCategory_WhenIdExist() {
+    void deleteCategoryById_shouldDeleteCategory_whenIdExist() {
         // Given
-        Category category = Category.builder()
+        Category existedCategory = Category.builder()
                 .id(1L)
                 .name("Electronic")
                 .build();
-        when(categoryRepo.findById(1L)).thenReturn(Optional.of(category));
+
+        when(categoryRepo.findById(existedCategory.getId())).thenReturn(Optional.of(existedCategory));
 
         // When
         Category deletedCategory = categoryService.deleteCategoryById(1L);
 
         // Then
-
-        verify(categoryRepo).delete(category);
-        assertEquals(category, deletedCategory);
+        verify(categoryRepo).delete(existedCategory);
+        assertEquals(existedCategory, deletedCategory);
 
     }
 
 
-    // TODO() I need to know about Invocation
     @Test
-    void updateCategory_ShouldUpdateCategory_WhenIdEqualCurrentCategoryId() {
+    void updateCategory_shouldUpdateCategory_whenNameOfCurrentCategoryIsNew() {
         // Given
-        Category category = Category.builder()
+        Category existedCategory = Category.builder()
                 .id(1L)
                 .name("Electronic")
                 .build();
 
-        when(categoryRepo.findById(category.getId())).thenReturn(Optional.of(category));
-        /* To make this line clear
-         * I can't use thenReturn because it will return the same Object every time
-         * In update method I make the updates and then save
-         * When I save the Repo return the argument that saved
-         * so invocation is just container for method details it know what arg i save
-         * then whatever I save it will return  */
+        Category request = Category.builder()
+                .name("Phones")
+                .build();
+
+        when(categoryRepo.findById(existedCategory.getId())).thenReturn(Optional.of(existedCategory));
+        when(categoryRepo.findByName(request.getName())).thenReturn(Optional.empty());
+
+        /* so basically invocation is an object that contain all details about the method that called
+         * in our case it's a save method*/
         when(categoryRepo.save(any(Category.class)))
                 .thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
 
         // When
-        Category excepectedCategory = Category.builder()
-                .name("Phones")
-                .build();
-
-        Category actualCategory = categoryService.updateCategory(excepectedCategory, 1L);
+        Category actualCategory = categoryService.updateCategory(request, existedCategory.getId());
 
         // Then
         assertEquals("Phones", actualCategory.getName());
     }
 
-//    @Test
-//    void addCategory_shouldAddAndReturnCategory() {
-//        // Given
-//        Category category = Category.builder()
-//                .id(1L)
-//                .name("Electronic")
-//                .build();
-//
-//        when(categoryRepo.save(category)).thenReturn(category);
-//
-//        // When
-//        Category actualCategory = categoryService.addCategory(category);
-//
-//
-//        // Then
-//        assertEquals(category, actualCategory);
-//    }
+    @Test
+    void updateCategory_shouldThrowException_whenNameOfCategoryInUpdateRequestIsAlreadyThere() {
+        // given
+        Category existedCategory = Category.builder()
+                .id(1L)
+                .name("Phones")
+                .build();
+
+        Category conflictingCategory = Category.builder()
+                .id(1L)
+                .name("Computers")
+                .build();
+
+        Category request = Category.builder()
+                .name("Computers")
+                .build();
+
+        when(categoryRepo.findById(existedCategory.getId())).thenReturn(Optional.of(existedCategory));
+        when(categoryRepo.findByName(request.getName())).thenReturn(Optional.of(conflictingCategory));
+
+        // when
+        // then
+        GlobalConflictException exception = assertThrows(GlobalConflictException.class,
+                () -> categoryService.updateCategory(request, existedCategory.getId()));
+        String expectedExceptionMessage = "Category with name '" + conflictingCategory.getName() + "' already exists";
+
+
+        assertEquals(expectedExceptionMessage, exception.getMessage());
+
+    }
+
+    // todo I need to add test about adding image to category
 }
